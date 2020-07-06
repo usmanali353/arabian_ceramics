@@ -17,14 +17,13 @@ class _QRScanner_State extends State<QRScanner>{
   String barcode;
   @override
   void initState() {
-    print(Product(name:'ARAGON CREAM',surface: 'GLOSSY',thickness:'9mm',size: '45x45 cm',range: 'DAR',material:'MARBLE',colour: 'BEIGE, BROWN',technology:'DIGITAL',structure: 'PLAIN',edge:'NATURAL',classification:'FLOOR TILES',suitibility: 'RESIDENTIAL AREA,LIVING ROOM,BATHROOM',image: null).toJson().toString());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    Scaffold(
+   return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF004c4c),
         title: Text("Create Production Request", style: TextStyle(
@@ -47,7 +46,6 @@ class _QRScanner_State extends State<QRScanner>{
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: scan,
-        tooltip: 'Increment',
         child: Icon(Icons.camera_enhance),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );

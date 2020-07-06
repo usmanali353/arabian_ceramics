@@ -1,4 +1,9 @@
 import 'package:Arabian_Ceramics/AddModel.dart';
+import 'package:Arabian_Ceramics/DetailPage.dart';
+import 'package:Arabian_Ceramics/Login.dart';
+import 'package:Arabian_Ceramics/ModelRequests.dart';
+import 'package:Arabian_Ceramics/RequestModel.dart';
+import 'package:Arabian_Ceramics/scanner.dart';
 import 'package:flutter/material.dart';
 
 
@@ -16,10 +21,9 @@ class _myAppState extends State<myApp> {
   Widget build(BuildContext context) {
     //final themeNotifier = Provider.of<ThemeNotifier>(context);
     return  MaterialApp(
-      title: "Sales Management",
+      title: "Arabian Ceramics",
       debugShowCheckedModeBanner: false,
-      //theme: themeNotifier.getTheme(),
-      home: AddModel(),
+      home: RequestModel(),
     );
   }
 }

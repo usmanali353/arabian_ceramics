@@ -1,4 +1,4 @@
-package com.example.flutterapp
+package iib.arabian_ceramics
 
 import io.flutter.embedding.android.FlutterActivity
 

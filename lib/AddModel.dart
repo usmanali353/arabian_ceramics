@@ -1,7 +1,10 @@
 import 'package:Arabian_Ceramics/Product.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+
+import 'Utils.dart';
 
 class AddModel extends StatefulWidget{
   @override
@@ -13,7 +16,8 @@ class AddModel extends StatefulWidget{
 }
 class _AddModel extends State<AddModel>{
   TextEditingController thickness, suitability;
-  List<String> product_name =[], surface=[], size=[], range=[], material=[], color=[], technology=[], structure=[], edge=[], classification=[];
+  var pickedImage=null;
+  List<String> product_name =["Alma","Apollo","Aqua","Aragon","Arcadia","Area","Artic","Atrium","Avenue","Baikal","Barsha","Bistro","Bologna","Brada","Bronze","CalaCatta","Canica","Capri","carrara","Cement","Circle","Code","Coliseo","Cotto","Cotton","Daka","Darco","Dayana","Devon","Diverse","Dogana","Duomo","Finnis","Joly","Maria","Tiera","Venecia"], surface=[], size=[], range=[], material=[], color=[], technology=[], structure=[], edge=[], classification=[];
   String selected_product_name, selected_surface, selected_size, selected_range, selected_material, selected_color, selected_technology, selected_structure, selected_edge, selected_classification;
   int product_name_id, surface_id, size_id, range_id, material_id, color_id, technology_id, structure_id, edge_id,classification_id;
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
@@ -29,6 +33,14 @@ class _AddModel extends State<AddModel>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.camera_enhance),
+        onPressed: (){
+          Utils.getImage().then((image){
+            this.pickedImage=image.readAsBytes();
+          });
+        },
+      ),
       appBar: AppBar(
         backgroundColor: Color(0xFF004c4c),
         title: Text("Create Production Request", style: TextStyle(
@@ -428,28 +440,15 @@ class _AddModel extends State<AddModel>{
                         height: 70,
                         child: MaterialButton(
                           onPressed: (){
-                            if(_fbKey.currentState.validate()){
 
-                            }
-//                          if(_fbKey.currentState.validate()){
-//                            ProgressDialog pd=ProgressDialog(context,isDismissible: true,type: ProgressDialogType.Normal);
-//                            pd.show();
-//                            Network_Operations.CreateCustomerCase(customerId, description.text, 1, caseType, 'some customer', 0, 'caseMemo').then((response){
-//                              pd.hide();
-//                              if(response!=null){
-//                                Scaffold.of(context).showSnackBar(SnackBar(
-//                                  backgroundColor: Colors.green,
-//                                  content: Text("Case Added Sucessfully"),
-//                                ));
-//                                Navigator.pop(context,'Refresh');
-//                              }else{
-//                                Scaffold.of(context).showSnackBar(SnackBar(
-//                                  backgroundColor: Colors.red,
-//                                  content: Text("Case not Added"),
-//                                ));
-//                              }
-//                            });
-//                          }
+                              Firestore.instance.collection("models").document().setData(Product(name:'ARAGON CREAM',surface: 'GLOSSY',thickness:'9mm',size: '45x45 cm',range: 'DAR',material:'MARBLE',colour: 'BEIGE, BROWN',technology:'DIGITAL',edge:'natural',structure: 'PLAIN',classification:'NATURAL',suitibility: 'RESIDENTIAL AREA,LIVING ROOM,BATHROOM',image: null).toJson()).then((response) {
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                  backgroundColor: Colors.green,
+                                  content: Text("Model Added to the System"),
+                                ));
+                              }).catchError((onError){
+                                print(onError);
+                              });
                           },
                           color:  Color(0xFF004c4c),
                           child: Text("Submit",style: TextStyle(color: Colors.white),),
