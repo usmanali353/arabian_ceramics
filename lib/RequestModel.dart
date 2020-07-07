@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:uuid/uuid.dart';
 
 import 'Product.dart';
 import 'Utils.dart';
@@ -17,7 +19,7 @@ class RequestModel extends StatefulWidget {
 class _RequestModelState extends State<RequestModel> {
   Uint8List picked_image;
   File _image;
-
+  GlobalKey<FormBuilderState> _fbkey=GlobalKey();
   StorageReference storageReference;
   TextEditingController productName,surface,thickness,size,range,material,color,technology,structure,edge,classification,suitibility;
   @override
@@ -34,11 +36,7 @@ class _RequestModelState extends State<RequestModel> {
     edge=TextEditingController();
     classification=TextEditingController();
     suitibility=TextEditingController();
-    FirebaseAuth.instance.currentUser().then((value){
-      storageReference = FirebaseStorage.instance
-          .ref()
-          .child("requested_model_images").child(value.uid);
-    });
+
     super.initState();
   }
   @override
@@ -51,6 +49,7 @@ class _RequestModelState extends State<RequestModel> {
       body: ListView(
         children: <Widget>[
           FormBuilder(
+            key: _fbkey,
             child: Column(
               children: <Widget>[
                 Padding(
@@ -63,6 +62,7 @@ class _RequestModelState extends State<RequestModel> {
                     child: FormBuilderTextField(
                       attribute: "Product Name",
                       controller: productName,
+                      validators: [FormBuilderValidators.required()],
                       decoration: InputDecoration(
                         hintText: "Product Name",
                         border: InputBorder.none,
@@ -81,6 +81,7 @@ class _RequestModelState extends State<RequestModel> {
                     child: FormBuilderTextField(
                       attribute: "Surface",
                       controller: surface,
+                      validators: [FormBuilderValidators.required()],
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.all(16),
                           border: InputBorder.none,
@@ -99,6 +100,7 @@ class _RequestModelState extends State<RequestModel> {
                     child: FormBuilderTextField(
                       attribute: "Thickness",
                       controller: thickness,
+                      validators: [FormBuilderValidators.required()],
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.all(16),
                           border: InputBorder.none,
@@ -117,6 +119,7 @@ class _RequestModelState extends State<RequestModel> {
                     child: FormBuilderTextField(
                       attribute: "Size (cm)",
                       controller: size,
+                      validators: [FormBuilderValidators.required()],
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.all(16),
                           border: InputBorder.none,
@@ -135,6 +138,7 @@ class _RequestModelState extends State<RequestModel> {
                     child: FormBuilderTextField(
                       attribute: "Range",
                       controller: range,
+                      validators: [FormBuilderValidators.required()],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(16),
                           border: InputBorder.none,
@@ -153,6 +157,7 @@ class _RequestModelState extends State<RequestModel> {
                     child: FormBuilderTextField(
                       attribute: "Material",
                       controller: material,
+                      validators: [FormBuilderValidators.required()],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(16),
                           border: InputBorder.none,
@@ -171,6 +176,7 @@ class _RequestModelState extends State<RequestModel> {
                     child: FormBuilderTextField(
                       attribute: "Color",
                       controller: color,
+                      validators: [FormBuilderValidators.required()],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(16),
                           border: InputBorder.none,
@@ -189,6 +195,7 @@ class _RequestModelState extends State<RequestModel> {
                     child: FormBuilderTextField(
                       attribute: "Technology",
                       controller: technology,
+                      validators: [FormBuilderValidators.required()],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(16),
                           border: InputBorder.none,
@@ -207,6 +214,7 @@ class _RequestModelState extends State<RequestModel> {
                     child: FormBuilderTextField(
                       attribute: "Structure",
                       controller: structure,
+                      validators: [FormBuilderValidators.required()],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(16),
                           border: InputBorder.none,
@@ -225,6 +233,7 @@ class _RequestModelState extends State<RequestModel> {
                     child: FormBuilderTextField(
                       attribute: "Edge",
                       controller: edge,
+                      validators: [FormBuilderValidators.required()],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(16),
                           border: InputBorder.none,
@@ -243,6 +252,7 @@ class _RequestModelState extends State<RequestModel> {
                     child: FormBuilderTextField(
                       attribute: "Classification",
                       controller: classification,
+                      validators: [FormBuilderValidators.required()],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(16),
                           border: InputBorder.none,
@@ -261,6 +271,7 @@ class _RequestModelState extends State<RequestModel> {
                     child: FormBuilderTextField(
                       attribute: "Suitibility",
                       controller: suitibility,
+                      validators: [FormBuilderValidators.required()],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(16),
                           border: InputBorder.none,
@@ -313,32 +324,44 @@ class _RequestModelState extends State<RequestModel> {
                         height: 70,
                         child: MaterialButton(
                           onPressed: (){
-                            StorageUploadTask uploadTask = storageReference.putFile(_image);
-                            uploadTask.onComplete.then((value){
-                              storageReference.getDownloadURL().then((downloadUrl){
-                                if(downloadUrl!=null){
-                                  Firestore.instance.collection("model_requests").document().setData(Product(name: productName.text,surface: surface.text,thickness: thickness.text,size: size.text,range: range.text,material: material.text,colour: color.text,technology: technology.text,structure: structure.text,edge:edge.text,classification: classification.text,suitibility: suitibility.text,image:downloadUrl).toJson()).then((response) {
-                                    Scaffold.of(context).showSnackBar(SnackBar(
-                                      backgroundColor: Colors.green,
-                                      content: Text("Model Added to the System"),
-                                    ));
-                                  }).catchError((onError){
-                                    print(onError);
-                                  });
-                                }else{
-                                  Scaffold.of(context).showSnackBar(SnackBar(
-                                    content: Text("Request for Model submitted"),
-                                    backgroundColor: Colors.green,
-                                  ));
-                                }
-                              }).catchError((onError){
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                  content: Text(onError.toString()),
-                                  backgroundColor: Colors.red,
-                                ));
-                              });
-                            });
+                            if(_fbkey.currentState.validate()){
+                              var uniqueId=Uuid().v1();
 
+                              storageReference = FirebaseStorage.instance
+                                  .ref()
+                                  .child("requested_model_images").child(uniqueId);
+                              ProgressDialog pd=ProgressDialog(context,isDismissible: true,type: ProgressDialogType.Normal);
+                              pd.show();
+                              StorageUploadTask uploadTask = storageReference.putFile(_image);
+                              uploadTask.onComplete.then((value){
+                                storageReference.getDownloadURL().then((downloadUrl){
+                                  if(downloadUrl!=null){
+                                    Firestore.instance.collection("model_requests").document().setData(Product(name: productName.text,surface: surface.text,thickness: thickness.text,size: size.text,range: range.text,material: material.text,colour: color.text,technology: technology.text,structure: structure.text,edge:edge.text,classification: classification.text,suitibility: suitibility.text,image:downloadUrl, ).toJson()).then((response) {
+                                      pd.hide();
+                                      Scaffold.of(context).showSnackBar(SnackBar(
+                                        backgroundColor: Colors.green,
+                                        content: Text("Model Added to the System"),
+                                      ));
+                                    }).catchError((onError){
+                                      pd.hide();
+                                      print(onError);
+                                    });
+                                  }else{
+                                    pd.hide();
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                      content: Text("Request for Model submitted"),
+                                      backgroundColor: Colors.green,
+                                    ));
+                                  }
+                                }).catchError((onError){
+                                  pd.hide();
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    content: Text(onError.toString()),
+                                    backgroundColor: Colors.red,
+                                  ));
+                                });
+                              });
+                            }
                           },
                           color:  Color(0xFF004c4c),
                           child: Text("Submit",style: TextStyle(color: Colors.white),),

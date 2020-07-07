@@ -1,0 +1,233 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+class designTopology extends StatefulWidget {
+  String market,client,event,other,size,surface,name,thickness,classification,color;
+
+  designTopology(this.market, this.client, this.event, this.other, this.size,
+      this.surface, this.name, this.thickness, this.classification, this.color);
+
+  @override
+  _designTopologyState createState() => _designTopologyState(market,client,event,other,size,surface,name,thickness,classification,color);
+}
+
+class _designTopologyState extends State<designTopology> {
+ List<String> range=['Ark'], material=[],structure=['Plain'], edge=['Natural'],technology=["Digital"];
+ String market,client,event,other,size,surface,name,thickness,classification,color;
+String selected_technology, selected_structure, selected_edge,selected_range, selected_material;
+int range_id, material_id,technology_id, structure_id, edge_id;
+ _designTopologyState(
+      this.market,
+      this.client,
+      this.event,
+      this.other,
+      this.size,
+      this.surface,
+      this.name,
+      this.thickness,
+      this.classification,
+      this.color);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Design Topology"),
+        backgroundColor: Color(0xFF004c4c),
+      ),
+      body: ListView(
+        children: <Widget>[
+          FormBuilder(
+            child: Column(
+              children: <Widget>[
+                //Product Materials
+                Padding(
+                  padding: const EdgeInsets.only(top:16,left:16,right:16),
+                  child: Visibility(
+                    // visible: flushes_loaded,
+                    child: Card(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: FormBuilderDropdown(
+                        attribute: "Material",
+                        validators: [FormBuilderValidators.required()],
+                        hint: Text("Select Material"),
+                        items:material!=null?material.map((horse)=>DropdownMenuItem(
+                          child: Text(horse),
+                          value: horse,
+                        )).toList():[""].map((name) => DropdownMenuItem(
+                            value: name, child: Text("$name")))
+                            .toList(),
+                        style: Theme.of(context).textTheme.bodyText1,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(16),
+                          border: InputBorder.none,
+                        ),
+                        onChanged: (value){
+                          setState(() {
+                            this.selected_material=value;
+                            this.material_id=material.indexOf(value);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                //Product Range
+                Padding(
+                  padding: const EdgeInsets.only(top: 16,left: 16,right:16),
+                  child: Visibility(
+                    // visible: flushes_loaded,
+                    child: Card(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: FormBuilderDropdown(
+                        attribute: "Range",
+                        validators: [FormBuilderValidators.required()],
+                        hint: Text("Select Range"),
+                        items:range!=null?range.map((horse)=>DropdownMenuItem(
+                          child: Text(horse),
+                          value: horse,
+                        )).toList():[""].map((name) => DropdownMenuItem(
+                            value: name, child: Text("$name")))
+                            .toList(),
+                        style: Theme.of(context).textTheme.bodyText1,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(16),
+                        ),
+                        onChanged: (value){
+                          setState(() {
+                            this.selected_range=value;
+                            this.range_id=range.indexOf(value);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                //Product Technology
+                Padding(
+                  padding: const EdgeInsets.only(top: 16,left: 16,right:16),
+                  child: Visibility(
+                    // visible: flushes_loaded,
+                    child: Card(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: FormBuilderDropdown(
+                        attribute: "Technology",
+                        validators: [FormBuilderValidators.required()],
+                        hint: Text("Select Technology"),
+                        items:technology!=null?technology.map((horse)=>DropdownMenuItem(
+                          child: Text(horse),
+                          value: horse,
+                        )).toList():[""].map((name) => DropdownMenuItem(
+                            value: name, child: Text("$name")))
+                            .toList(),
+                        style: Theme.of(context).textTheme.bodyText1,
+                        decoration: InputDecoration(
+                          border:InputBorder.none,
+                          contentPadding: EdgeInsets.all(16),
+                        ),
+                        onChanged: (value){
+                          setState(() {
+                            this.selected_technology=value;
+                            this.technology_id=technology.indexOf(value);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                //Product Structure
+                Padding(
+                  padding: const EdgeInsets.only(top: 16,right: 16,left: 16),
+                  child: Visibility(
+                    // visible: flushes_loaded,
+                    child: Card(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: FormBuilderDropdown(
+                        attribute: "Structure",
+                        validators: [FormBuilderValidators.required()],
+                        hint: Text("Select Structure"),
+                        items:structure!=null?structure.map((horse)=>DropdownMenuItem(
+                          child: Text(horse),
+                          value: horse,
+                        )).toList():[""].map((name) => DropdownMenuItem(
+                            value: name, child: Text("$name")))
+                            .toList(),
+                        style: Theme.of(context).textTheme.bodyText1,
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.all(16)
+                        ),
+                        onChanged: (value){
+                          setState(() {
+                            this.selected_structure=value;
+                            this.structure_id=structure.indexOf(value);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                //Edge
+                Padding(
+                  padding: const EdgeInsets.only(top: 16,left: 16,right:16),
+                  child: Visibility(
+                    // visible: flushes_loaded,
+                    child: Card(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: FormBuilderDropdown(
+                        attribute: "Edge",
+                        validators: [FormBuilderValidators.required()],
+                        hint: Text("Select Edge"),
+                        items:edge!=null?edge.map((horse)=>DropdownMenuItem(
+                          child: Text(horse),
+                          value: horse,
+                        )).toList():[""].map((name) => DropdownMenuItem(
+                            value: name, child: Text("$name")))
+                            .toList(),
+                        style: Theme.of(context).textTheme.bodyText1,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(16),
+                        ),
+                        onChanged: (value){
+                          setState(() {
+                            this.selected_edge=value;
+                            this.edge_id=edge.indexOf(value);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                Center(
+                  child: MaterialButton(
+                    color: Color(0xFF004c4c),
+                    child: Text("Proceed",style: TextStyle(color: Colors.white),),
+                    onPressed: (){
+
+                    },
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}

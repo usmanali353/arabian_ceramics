@@ -30,9 +30,13 @@ dependencies:
   cloud_firestore: ^0.13.7
   firebase_storage: ^3.1.6
   image_picker: ^0.6.7+3
-  progress_dialog: ^1.2.0
+  progress_dialog:
   data_connection_checker: ^0.3.4
   flushbar: ^1.10.4
+  uuid: 2.2.0
+  shared_preferences: ^0.5.7+3
+  multiselect_formfield: ^0.1.3
+
 
 
 

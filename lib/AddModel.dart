@@ -15,9 +15,9 @@ class AddModel extends StatefulWidget{
 
 }
 class _AddModel extends State<AddModel>{
-  TextEditingController thickness, suitability;
+  TextEditingController thickness, suitability,market,event,client,other;
   var pickedImage=null;
-  List<String> product_name =["Alma","Apollo","Aqua","Aragon","Arcadia","Area","Artic","Atrium","Avenue","Baikal","Barsha","Bistro","Bologna","Brada","Bronze","CalaCatta","Canica","Capri","carrara","Cement","Circle","Code","Coliseo","Cotto","Cotton","Daka","Darco","Dayana","Devon","Diverse","Dogana","Duomo","Finnis","Joly","Maria","Tiera","Venecia"], surface=[], size=[], range=[], material=[], color=[], technology=[], structure=[], edge=[], classification=[];
+  List<String> product_name =["Alma","Apollo","Aqua","Aragon","Arcadia","Area","Artic","Atrium","Avenue","Baikal","Barsha","Bistro","Bologna","Brada","Bronze","CalaCatta","Canica","Capri","carrara","Cement","Circle","Code","Coliseo","Cotto","Cotton","Daka","Darco","Dayana","Devon","Diverse","Dogana","Duomo","Finnis","Joly","Maria","Tiera","Venecia"], surface=["Glossy,Mate"], size=[], range=[], material=[], color=["Beige","Brown","Cream","Gray","Light Gray","Multi color","White"], technology=["Digital"], structure=[], edge=[], classification=["Floor Tiles","Floor Decor","Wall Tiles","Wall Decor"];
   String selected_product_name, selected_surface, selected_size, selected_range, selected_material, selected_color, selected_technology, selected_structure, selected_edge, selected_classification;
   int product_name_id, surface_id, size_id, range_id, material_id, color_id, technology_id, structure_id, edge_id,classification_id;
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
@@ -26,6 +26,10 @@ class _AddModel extends State<AddModel>{
   void initState() {
     thickness = TextEditingController();
     suitability = TextEditingController();
+    market = TextEditingController();
+    event=TextEditingController();
+    client=TextEditingController();
+    other=TextEditingController();
   }
 
 
@@ -43,7 +47,7 @@ class _AddModel extends State<AddModel>{
       ),
       appBar: AppBar(
         backgroundColor: Color(0xFF004c4c),
-        title: Text("Create Production Request", style: TextStyle(
+        title: Text("Create Model Request", style: TextStyle(
           color: Colors.white
         ),),
       ),
@@ -53,6 +57,88 @@ class _AddModel extends State<AddModel>{
             key: _fbKey,
             child: Column(
               children: <Widget>[
+
+                //Market TextBox
+                Padding(
+                  padding: EdgeInsets.only(top: 16,left: 16,right: 16),
+                  child: Card(
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: FormBuilderTextField(
+                      keyboardType: TextInputType.number,
+                      controller: market,
+                      attribute: "Market",
+                      validators: [FormBuilderValidators.required()],
+                      decoration: InputDecoration(hintText: "Market",
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(16),
+                      ),
+                    ),
+                  ),
+                ),
+                // Event TextBox
+                Padding(
+                  padding: EdgeInsets.only(top: 16,left: 16,right: 16),
+                  child: Card(
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: FormBuilderTextField(
+                      keyboardType: TextInputType.number,
+                      controller: event,
+                      attribute: "Event",
+                      validators: [FormBuilderValidators.required()],
+                      decoration: InputDecoration(hintText: "Event",
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(16),
+                      ),
+                    ),
+                  ),
+                ),
+                // Client TextBox
+                Padding(
+                  padding: EdgeInsets.only(top: 16,left: 16,right: 16),
+                  child: Card(
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: FormBuilderTextField(
+                      keyboardType: TextInputType.number,
+                      controller: client,
+                      attribute: "Client",
+                      validators: [FormBuilderValidators.required()],
+                      decoration: InputDecoration(hintText: "Client",
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(16),
+                      ),
+                    ),
+                  ),
+                ),
+                //Other TextBox
+                Padding(
+                  padding: EdgeInsets.only(top: 16,left: 16,right: 16,bottom: 16),
+                  child: Card(
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: FormBuilderTextField(
+                      keyboardType: TextInputType.number,
+                      controller: other,
+                      attribute: "Other",
+                      validators: [FormBuilderValidators.required()],
+                      decoration: InputDecoration(hintText: "Other",
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(16),
+                      ),
+                    ),
+                  ),
+                ),
+                //ProductName Dropdown
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: Visibility(
@@ -86,6 +172,42 @@ class _AddModel extends State<AddModel>{
                     ),
                   ),
                 ),
+                //Product Classification Dropdown
+                Padding(
+                  padding: const EdgeInsets.only(top: 16,left: 16,right:16),
+                  child: Visibility(
+                    // visible: flushes_loaded,
+                    child: Card(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: FormBuilderDropdown(
+                        attribute: "Classification",
+                        validators: [FormBuilderValidators.required()],
+                        hint: Text("Select Classification"),
+                        items:classification!=null?classification.map((horse)=>DropdownMenuItem(
+                          child: Text(horse),
+                          value: horse,
+                        )).toList():[""].map((name) => DropdownMenuItem(
+                            value: name, child: Text("$name")))
+                            .toList(),
+                        style: Theme.of(context).textTheme.bodyText1,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(16),
+                        ),
+                        onChanged: (value){
+                          setState(() {
+                            this.selected_classification=value;
+                            this.classification_id=classification.indexOf(value);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                //Product Surface Dropdown
                 Padding(
                   padding: const EdgeInsets.only(left: 16,right: 16),
                   child: Visibility(
@@ -120,25 +242,7 @@ class _AddModel extends State<AddModel>{
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 16,left: 16,right: 16),
-                  child: Card(
-                    elevation: 10,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: FormBuilderTextField(
-                      keyboardType: TextInputType.number,
-                      controller: thickness,
-                      attribute: "Thickness",
-                      validators: [FormBuilderValidators.required()],
-                      decoration: InputDecoration(hintText: "Thickness (cm)",
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.all(16),
-                      ),
-                    ),
-                  ),
-                ),
+                //Product Size Dropdown
                 Padding(
                   padding: const EdgeInsets.only(top: 16,left: 16,right: 16),
                   child: Visibility(
@@ -173,40 +277,27 @@ class _AddModel extends State<AddModel>{
                     ),
                   ),
                 ),
+                //Product Thickness TextBox
                 Padding(
-                  padding: const EdgeInsets.only(top: 16,left: 16,right:16),
-                  child: Visibility(
-                    // visible: flushes_loaded,
-                    child: Card(
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: FormBuilderDropdown(
-                        attribute: "Range",
-                        validators: [FormBuilderValidators.required()],
-                        hint: Text("Select Range"),
-                        items:range!=null?range.map((horse)=>DropdownMenuItem(
-                          child: Text(horse),
-                          value: horse,
-                        )).toList():[""].map((name) => DropdownMenuItem(
-                            value: name, child: Text("$name")))
-                            .toList(),
-                        style: Theme.of(context).textTheme.bodyText1,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.all(16),
-                        ),
-                        onChanged: (value){
-                          setState(() {
-                            this.selected_range=value;
-                            this.range_id=range.indexOf(value);
-                          });
-                        },
+                  padding: EdgeInsets.only(top: 16,left: 16,right: 16),
+                  child: Card(
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: FormBuilderTextField(
+                      keyboardType: TextInputType.number,
+                      controller: thickness,
+                      attribute: "Thickness",
+                      validators: [FormBuilderValidators.required()],
+                      decoration: InputDecoration(hintText: "Thickness (cm)",
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(16),
                       ),
                     ),
                   ),
                 ),
+                //Product Materials
                 Padding(
                   padding: const EdgeInsets.only(top:16,left:16,right:16),
                   child: Visibility(
@@ -241,6 +332,42 @@ class _AddModel extends State<AddModel>{
                     ),
                   ),
                 ),
+                //Product Range
+                Padding(
+                  padding: const EdgeInsets.only(top: 16,left: 16,right:16),
+                  child: Visibility(
+                    // visible: flushes_loaded,
+                    child: Card(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: FormBuilderDropdown(
+                        attribute: "Range",
+                        validators: [FormBuilderValidators.required()],
+                        hint: Text("Select Range"),
+                        items:range!=null?range.map((horse)=>DropdownMenuItem(
+                          child: Text(horse),
+                          value: horse,
+                        )).toList():[""].map((name) => DropdownMenuItem(
+                            value: name, child: Text("$name")))
+                            .toList(),
+                        style: Theme.of(context).textTheme.bodyText1,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(16),
+                        ),
+                        onChanged: (value){
+                          setState(() {
+                            this.selected_range=value;
+                            this.range_id=range.indexOf(value);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+
                 Padding(
                   padding: const EdgeInsets.only(top:16,left:16,right:16),
                   child: Visibility(
@@ -275,6 +402,7 @@ class _AddModel extends State<AddModel>{
                     ),
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(top: 16,left: 16,right:16),
                   child: Visibility(

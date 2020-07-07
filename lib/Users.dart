@@ -2,7 +2,7 @@ import 'Roles.dart';
 
 class Users{
   String name;
-  List<Map> roles;
+  List<dynamic> roles;
 
   Users({this.name, this.roles});
 
