@@ -9,7 +9,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:uuid/uuid.dart';
 
-import 'Product.dart';
+import 'Model/Product.dart';
 import 'Utils.dart';
 class RequestModel extends StatefulWidget {
   @override
@@ -21,6 +21,7 @@ class _RequestModelState extends State<RequestModel> {
   File _image;
   GlobalKey<FormBuilderState> _fbkey=GlobalKey();
   StorageReference storageReference;
+
   TextEditingController productName,surface,thickness,size,range,material,color,technology,structure,edge,classification,suitibility;
   @override
   void initState() {
@@ -377,4 +378,5 @@ class _RequestModelState extends State<RequestModel> {
       ),
     );
   }
+
 }

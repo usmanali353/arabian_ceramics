@@ -1,4 +1,4 @@
-import 'package:Arabian_Ceramics/Product.dart';
+import 'file:///C:/Users/IIB/AndroidStudioProjects/flutter_app/lib/Model/Product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

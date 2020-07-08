@@ -1,4 +1,4 @@
-import 'package:Arabian_Ceramics/Product.dart';
+import 'file:///C:/Users/IIB/AndroidStudioProjects/flutter_app/lib/Model/Product.dart';
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

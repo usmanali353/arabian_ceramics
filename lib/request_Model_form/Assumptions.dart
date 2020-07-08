@@ -1,14 +1,20 @@
 import 'package:Arabian_Ceramics/request_Model_form/Specifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:need_resume/need_resume.dart';
 class Assumptions extends StatefulWidget {
   @override
   _AssumptionsState createState() => _AssumptionsState();
 }
 
-class _AssumptionsState extends State<Assumptions> {
+class _AssumptionsState extends ResumableState<Assumptions> {
   TextEditingController market,event,client,other;
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
+  @override
+  void onResume() {
+   Navigator.pop(context,'Refresh');
+    super.onResume();
+  }
   @override
   void initState() {
     market = TextEditingController();
@@ -117,7 +123,7 @@ class _AssumptionsState extends State<Assumptions> {
                     color: Color(0xFF004c4c),
                     onPressed: (){
                       if(_fbKey.currentState.validate()){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>Specifications(market.text,client.text,event.text,other.text)));
+                        push(context, MaterialPageRoute(builder: (context)=>Specifications(market.text,client.text,event.text,other.text)));
                       }
                     },
                   ),

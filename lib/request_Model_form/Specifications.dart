@@ -2,6 +2,7 @@ import 'package:Arabian_Ceramics/request_Model_form/designTopology.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
+import 'package:need_resume/need_resume.dart';
 class Specifications extends StatefulWidget {
   String market,client,event,other;
 
@@ -11,7 +12,7 @@ class Specifications extends StatefulWidget {
   _SpecificationsState createState() => _SpecificationsState(market,client,event,other);
 }
 
-class _SpecificationsState extends State<Specifications> {
+class _SpecificationsState extends ResumableState<Specifications> {
   String market,client,event,other;
   TextEditingController thickness;
   bool sizeVisible=false,surfaceVisible=false,thicknessVisible=false;
@@ -23,6 +24,13 @@ class _SpecificationsState extends State<Specifications> {
   String _myActivitiesResult;
   final formKey = new GlobalKey<FormState>();
   final fbKey = new GlobalKey<FormBuilderState>();
+  @override
+  void onResume() {
+    if(resume.data.toString()=='Close') {
+      Navigator.pop(context, 'Close');
+    }
+    super.onResume();
+  }
 @override
   void initState() {
    thickness=TextEditingController();
@@ -364,7 +372,7 @@ class _SpecificationsState extends State<Specifications> {
                           setState(() {
                             _myActivitiesResult = _myActivities.toString();
                           });
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>designTopology(market,client,event,other,selected_size,selected_surface,selected_product_name,thickness.text,selected_classification,_myActivitiesResult)));
+                          push(context, MaterialPageRoute(builder: (context)=>designTopology(market,client,event,other,selected_size,selected_surface,selected_product_name,thickness.text,selected_classification,_myActivitiesResult)));
                         }
                       },
                     ),

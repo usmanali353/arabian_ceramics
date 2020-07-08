@@ -1,16 +1,11 @@
 import 'dart:convert';
-
+import 'package:Arabian_Ceramics/Model/Users.dart';
 import 'package:Arabian_Ceramics/ModelRequests.dart';
-import 'package:Arabian_Ceramics/Users.dart';
 import 'package:Arabian_Ceramics/Utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'Roles.dart';
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -124,19 +119,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: EdgeInsets.all(16),
                         minWidth: MediaQuery.of(context).size.width,
                         onPressed: ()async{
-                          SharedPreferences prefs=await SharedPreferences.getInstance();
                           ProgressDialog pd=ProgressDialog(context,isDismissible: true,type: ProgressDialogType.Normal);
-
                           if(username.text!=null&&password.text!=null&&Utils.validateEmail(username.text)){
                             pd.show();
-                            FirebaseAuth.instance.signInWithEmailAndPassword(email: username.text, password: password.text).then((authResult){
+                            Utils.check_connectivity().then((connected){
+                              if(connected){
+                             FirebaseAuth.instance.signInWithEmailAndPassword(email: username.text, password: password.text).then((authResult){
                               FirebaseUser user=authResult.user;
                              Firestore.instance.collection("Users").document(user.uid).get().then((documentSnapshot){
                                pd.hide();
                                if(documentSnapshot.exists){
-                                 prefs.setString("user_info", jsonEncode(Users.fromMap(documentSnapshot.data)));
-                                 prefs.setString("user_id",documentSnapshot.documentID);
-                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ModelRequests()));
+                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ModelRequests(Users.fromMap(documentSnapshot.data))));
                                }
                              });
                             }).catchError((onError){
@@ -146,33 +139,49 @@ class _LoginScreenState extends State<LoginScreen> {
                                 backgroundColor: Colors.red,
                               ));
                             });
-                          }
-
-//                          FirebaseAuth.instance.createUserWithEmailAndPassword(email:'customer@acmc.com', password: 'acmcCustomer1').then((authresult){
-//                            FirebaseUser user= authresult.user;
-//                            if(user!=null){
-//                               List<Map> r=[];
-//                               r.add(Roles(roleName: 'Approve Requests').toJson());
-//                                Firestore.instance.collection("Users").document(user.uid).setData(Users(name: 'Customer 1',roles: r).toJson()).then((value){
+                              }else{
+    Scaffold.of(context).showSnackBar(SnackBar(
+    content: Text("Network not Available"),
+    backgroundColor: Colors.red,
+    ));
+                              }
+                            });
+                        }
+//                          Utils.check_connectivity().then((connected){
+//                            if(connected){
+//                              FirebaseAuth.instance.createUserWithEmailAndPassword(email:'basit@mailinator.com', password: 'basit123').then((authresult){
+//                                FirebaseUser user= authresult.user;
+//                                if(user!=null){
+//                                  List<Map> r=[];
+//                                  r.add(Roles(roleName: 'Schedule Model Requests').toJson());
+//                                  Firestore.instance.collection("Users").document(user.uid).setData(Users(name: 'Basit Mehmood',roles: r).toJson()).then((value){
+//                                    Scaffold.of(context).showSnackBar(SnackBar(
+//                                      content: Text("Acmc Member Registered"),
+//                                      backgroundColor: Colors.green,
+//                                    ));
+//                                  }).catchError((onError){
+//                                    print(onError);
+//                                  });
+//                                }else{
 //                                  Scaffold.of(context).showSnackBar(SnackBar(
-//                                    content: Text("Customer Registered"),
-//                                    backgroundColor: Colors.green,
+//                                    content: Text("Registration Failed"),
+//                                    backgroundColor: Colors.red,
 //                                  ));
-//                                }).catchError((onError){
-//                                  print(onError);
-//                                });
+//                                }
+//                              }).catchError((onError){
+//                                Scaffold.of(context).showSnackBar(SnackBar(
+//                                  backgroundColor: Colors.red,
+//                                  content: Text(onError.toString()),
+//                                ));
+//                              });
 //                            }else{
-//                               Scaffold.of(context).showSnackBar(SnackBar(
-//                                 content: Text("Registration Failed"),
-//                                 backgroundColor: Colors.red,
-//                               ));
+//                              Scaffold.of(context).showSnackBar(SnackBar(
+//                                backgroundColor: Colors.red,
+//                                content: Text("Network not Available"),
+//                              ));
 //                            }
-//                          }).catchError((onError){
-//                            Scaffold.of(context).showSnackBar(SnackBar(
-//                              backgroundColor: Colors.red,
-//                              content: Text(onError.toString()),
-//                            ));
 //                          });
+
                         },
                         color: Colors.white,
                         child: Text("SIGN IN",style: TextStyle(
