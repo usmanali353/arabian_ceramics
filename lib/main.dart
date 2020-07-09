@@ -52,6 +52,7 @@ class _myAppState extends State<myApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: myColor,
+        brightness: Brightness.dark
       ),
       home: LoginScreen(),//loggedIn?ModelRequests():LoginScreen(),
     );

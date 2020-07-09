@@ -42,151 +42,134 @@ class _DetailPageState extends State<DetailPage>{
               padding: const EdgeInsets.only(top: 150, bottom: 10),
               child: Center(
                 child: new Container(
-                  height: MediaQuery.of(context).size.height * 0.65,
+                  //height: MediaQuery.of(context).size.height * 0.65,
                   //width: ,
                   child: new Card(
-                    color: Colors.white,
                     elevation: 6.0,
                     margin: EdgeInsets.only(right: 15.0, left: 15.0),
                       child: Scrollbar(
                         child: ListView(
                           children: <Widget>[
                             Padding(
+                              padding: EdgeInsets.only(top:4,bottom: 4),
+                              child: Center(
+                                child: Text("Request Details", style:
+                                TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20
+                                ),),
+                              ),
+
+                            ),
+                            ListTile(
+                              title: Text("Request Date",style: TextStyle(fontWeight: FontWeight.bold),),
+                              trailing: Text(product.requestDate),
+                            ),
+                            Divider(),
+                            ListTile(
+                              title: Text("Request Status",style: TextStyle(fontWeight: FontWeight.bold),),
+                              trailing: Text(product.status),
+                            ),
+                            Divider(),
+                            Padding(
                               padding: EdgeInsets.only(top: 4, bottom: 4),
                             ),
-                            Center(child: Text(product.name,
+                            Center(child: Text("Requested Item Info",
                               style:
 //                              GoogleFonts.courgette(
 //                              textStyle: TextStyle(color: Colors.black, fontSize: 25),
 //                            ),
                             TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 25
+                              fontSize: 20
                             ),
                             ),
                             ),
                            Padding(
                              padding: EdgeInsets.only(top: 4, bottom: 4),
                            ),
+                            ListTile(
+                              title: Text("Item Name", style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),),
+                              trailing: Text(product.name),
+                            ),
+                           Divider(),
                            ListTile(
                               title: Text("Surface", style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18
                               ),),
-                              trailing: Text(product.surface, style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 18
-                              ),),
+                              trailing: Text(product.surface),
                             ),
                             Divider(),
                             ListTile(
                               title: Text("Thickness", style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18
                               ),),
-                              trailing: Text(product.thickness, style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 18
-                              ),),
+                              trailing: Text(product.thickness),
                             ),
                             Divider(),
                             ListTile(
                               title: Text("Size", style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18
                               ),),
-                              trailing: Text(product.size, style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 18
-                              ),),
+                              trailing: Text(product.size),
                             ),
                             Divider(),
                             ListTile(
                               title: Text("Range", style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18
                               ),),
-                              trailing: Text(product.range, style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 18
-                              ),),
+                              trailing: Text(product.range),
                             ),
                             Divider(),
                             ListTile(
                               title: Text("Material", style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18
                               ),),
-                              trailing: Text(product.material, style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 18
-                              ),),
+                              trailing: Text(product.material),
                             ),
                             Divider(),
                             ListTile(
                               title: Text("Color", style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18
                               ),),
-                              trailing: Text(product.colour, style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 18
-                              ),),
+                              trailing: Text(product.colour),
                             ),
                             Divider(),
                             ListTile(
                               title: Text("Technology", style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18
                               ),),
-                              trailing: Text(product.technology, style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 18
-                              ),),
+                              trailing: Text(product.technology),
                             ),
                             Divider(),
                             ListTile(
                               title: Text("Structure", style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18
+                                  fontWeight: FontWeight.bold
                               ),),
-                              trailing: Text(product.structure, style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 18
-                              ),),
+                              trailing: Text(product.structure),
                             ),
                             Divider(),
                             ListTile(
                               title: Text("Edge", style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18
                               ),),
-                              trailing: Text(product.edge, style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 18
-                              ),),
+                              trailing: Text(product.edge),
                             ),
                             Divider(),
                             ListTile(
                               title: Text("Classification", style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18
+                                fontWeight: FontWeight.bold,
                               ),),
-                              trailing: Text(product.classification, style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 18
-                              ),),
+                              trailing: Text(product.classification),
                             ),
                             Divider(),
                             ListTile(
                               title: Text("Suitability", style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18
                               ),),
-                              trailing: Text(product.suitibility, style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 18
-                              ),),
+                              trailing: Text(product.suitibility),
                             ),
                             Divider(),
                           ],

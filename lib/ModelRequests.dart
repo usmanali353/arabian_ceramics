@@ -2,6 +2,7 @@ import 'package:Arabian_Ceramics/DetailPage.dart';
 import 'package:Arabian_Ceramics/Model/Product.dart';
 import 'package:Arabian_Ceramics/Model/Schedule.dart';
 import 'package:Arabian_Ceramics/Model/Users.dart';
+import 'package:Arabian_Ceramics/Production_Schedule/SchedulesList.dart';
 import 'package:Arabian_Ceramics/Users/Login.dart';
 import 'package:Arabian_Ceramics/Utils.dart';
 import 'package:Arabian_Ceramics/request_Model_form/Assumptions.dart';
@@ -63,12 +64,7 @@ class _ModelReState extends State<ModelRequests> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: isCustomer?FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>Assumptions()));
-        },
-      ):Container(),
+      floatingActionButton: buildFloatingactionButtons(),
       appBar: AppBar(
           title:Text("Model Requests"),
         actions: <Widget>[
@@ -123,79 +119,87 @@ class _ModelReState extends State<ModelRequests> {
             }
           });
         },
-        child: ListView.builder(itemCount:products!=null?products.length:0,itemBuilder: (BuildContext context,int index){
-          return Column(
-            children: <Widget>[
-              ListTile(
-                leading: Image.network(products[index].image),
-                title: Text(products[index].name),
-                subtitle: Text(products[index].size),
-                trailing: Text(products[index].requestDate),
-                onTap: (){
-                    if(canApproveAcmc&&products[index].status=="New Request"){
-                      showAlertDialog(context,products[index],productId[index]);
-                    }else if(canScheduleProduction&&products[index].status=="Approved by ACMC"){
-                      showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 60))).then((selectedDate){
-                        if(selectedDate!=null){
-                          Map<String,dynamic> map=Map();
-                          map.putIfAbsent("status", () => "Scheduled for Production");
-                          ProgressDialog pd=ProgressDialog(context);
-                          pd.show();
-                          Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((value) {
-                            Firestore.instance.collection("Schedules").document().setData(Schedule(
-                                scheduledById: userId,
-                                scheduledOn:DateFormat("yyyy-MM-dd").format(selectedDate),
-                                scheduledByName: users.name,
-                                requestedDate: products[index].requestDate,
-                                requesterId: products[index].requestedBy,
-                                name: products[index].name,
-                                surface: products[index].surface,
-                                thickness: products[index].thickness,
-                                size:products[index].size,
-                                range: products[index].range,
-                                material:products[index].material,
-                                colour: products[index].colour,
-                                technology: products[index].technology,
-                                structure: products[index].structure,
-                                edge: products[index].edge,
-                                classification: products[index].classification).toJson()).then((value){
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Card(
+            elevation: 10,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: ListView.builder(itemCount:products!=null?products.length:0,itemBuilder: (BuildContext context,int index){
+              return Column(
+                children: <Widget>[
+                  ListTile(
+                    leading: Image.network(products[index].image),
+                    title: Text(products[index].name),
+                    subtitle: Text(products[index].status),
+                    trailing: Text(products[index].requestDate),
+                    onTap: (){
+                        if(canApproveAcmc&&products[index].status=="New Request"){
+                          showAlertDialog(context,products[index],productId[index]);
+                        }else if(canScheduleProduction&&products[index].status=="Approved by ACMC"){
+                          showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 60))).then((selectedDate){
+                            if(selectedDate!=null){
+                              Map<String,dynamic> map=Map();
+                              map.putIfAbsent("status", () => "Scheduled for Production");
+                              ProgressDialog pd=ProgressDialog(context);
+                              pd.show();
+                              Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((value) {
+                                Firestore.instance.collection("Schedules").document().setData(Schedule(
+                                    scheduledById: userId,
+                                    scheduledOn:DateFormat("yyyy-MM-dd").format(selectedDate),
+                                    scheduledByName: users.name,
+                                    requestedDate: products[index].requestDate,
+                                    requesterId: products[index].requestedBy,
+                                    name: products[index].name,
+                                    surface: products[index].surface,
+                                    thickness: products[index].thickness,
+                                    size:products[index].size,
+                                    range: products[index].range,
+                                    material:products[index].material,
+                                    colour: products[index].colour,
+                                    technology: products[index].technology,
+                                    structure: products[index].structure,
+                                    edge: products[index].edge,
+                                    classification: products[index].classification).toJson()).then((value){
+                                      pd.hide();
+                                  Flushbar(
+                                    message: "request Scheduled",
+                                    backgroundColor: Colors.green,
+                                    duration: Duration(seconds: 5),
+                                  )..show(context);
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+                                }).catchError((onError){
                                   pd.hide();
-                              Flushbar(
-                                message: "request Scheduled",
-                                backgroundColor: Colors.green,
-                                duration: Duration(seconds: 5),
-                              )..show(context);
-                              WidgetsBinding.instance
-                                  .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
-                            }).catchError((onError){
-                              pd.hide();
-                              Flushbar(
-                                message: onError.toString(),
-                                backgroundColor: Colors.green,
-                                duration: Duration(seconds: 5),
-                              )..show(context);
-                            });
-                          }).catchError((onError){
-                            pd.hide();
-                            Flushbar(
-                              message: onError.toString(),
-                              backgroundColor: Colors.red,
-                              duration: Duration(seconds: 5),
-                            )..show(context);
+                                  Flushbar(
+                                    message: onError.toString(),
+                                    backgroundColor: Colors.green,
+                                    duration: Duration(seconds: 5),
+                                  )..show(context);
+                                });
+                              }).catchError((onError){
+                                pd.hide();
+                                Flushbar(
+                                  message: onError.toString(),
+                                  backgroundColor: Colors.red,
+                                  duration: Duration(seconds: 5),
+                                )..show(context);
+                              });
+                            }
                           });
+                        }else{
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(products[index])));
                         }
-                      });
-                    }else{
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(products[index])));
-                    }
 
-                },
-              ),
-              Divider(),
-            ],
-
-          );
-        }),
+                    },
+                  ),
+                  Divider(),
+                ],
+              );
+            }),
+          ),
+        ),
       ),
     );
   }
@@ -318,5 +322,21 @@ class _ModelReState extends State<ModelRequests> {
         return alert;
       },
     );
+  }
+  Widget buildFloatingactionButtons(){
+    if(isCustomer){
+      return FloatingActionButton(
+          child: Icon(Icons.add),
+    onPressed: (){
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>Assumptions()));
+    },
+      );
+    }else if(canScheduleProduction)
+      return FloatingActionButton(
+        child: Icon(Icons.list),
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>SchedulesList()));
+        },
+      );
   }
 }
