@@ -44,7 +44,6 @@ int range_id, material_id,technology_id, structure_id, edge_id;
     return Scaffold(
       appBar: AppBar(
         title: Text("Design Topology"),
-        backgroundColor: Color(0xFF004c4c),
       ),
       body: ListView(
         children: <Widget>[

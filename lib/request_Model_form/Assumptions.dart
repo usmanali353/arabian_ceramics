@@ -27,7 +27,6 @@ class _AssumptionsState extends ResumableState<Assumptions> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF004c4c),
         title: Text("Assumptions"),
       ),
       body: ListView(
@@ -45,7 +44,6 @@ class _AssumptionsState extends ResumableState<Assumptions> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: FormBuilderTextField(
-                      keyboardType: TextInputType.number,
                       controller: market,
                       attribute: "Market",
                       validators: [FormBuilderValidators.required()],
@@ -65,7 +63,6 @@ class _AssumptionsState extends ResumableState<Assumptions> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: FormBuilderTextField(
-                      keyboardType: TextInputType.number,
                       controller: event,
                       attribute: "Event",
                       validators: [FormBuilderValidators.required()],
@@ -85,7 +82,6 @@ class _AssumptionsState extends ResumableState<Assumptions> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: FormBuilderTextField(
-                      keyboardType: TextInputType.number,
                       controller: client,
                       attribute: "Client",
                       validators: [FormBuilderValidators.required()],
@@ -105,7 +101,6 @@ class _AssumptionsState extends ResumableState<Assumptions> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: FormBuilderTextField(
-                      keyboardType: TextInputType.number,
                       controller: other,
                       attribute: "Other",
                       validators: [FormBuilderValidators.required()],

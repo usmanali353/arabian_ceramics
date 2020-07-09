@@ -70,7 +70,6 @@ class _ModelReState extends State<ModelRequests> {
       ):Container(),
       appBar: AppBar(
           title:Text("Model Requests"),
-        backgroundColor: Color(0xFF004c4c),
         actions: <Widget>[
           PopupMenuButton<String>(
             onSelected: (choice){

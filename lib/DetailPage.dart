@@ -23,19 +23,7 @@ class _DetailPageState extends State<DetailPage>{
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Color(0xFF004c4c),
           title: Text("Product Details"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                //Navigator.push(context, MaterialPageRoute(builder: (context) => add_breeding_control(token)),);
-              },
-            )
-          ],
         ),
         body: Stack(
           children: <Widget>[

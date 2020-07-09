@@ -41,7 +41,6 @@ class _SpecificationsState extends ResumableState<Specifications> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Specifications"),
-        backgroundColor: Color(0xFF004c4c),
       ),
       body:ListView(
         children: <Widget>[
@@ -297,7 +296,6 @@ class _SpecificationsState extends ResumableState<Specifications> {
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: FormBuilderTextField(
-                        keyboardType: TextInputType.number,
                         controller: thickness,
                         attribute: "Thickness",
                         validators: [FormBuilderValidators.required()],
@@ -314,49 +312,56 @@ class _SpecificationsState extends ResumableState<Specifications> {
                   key: formKey,
                   child: Padding(
                     padding: EdgeInsets.only(top:16,left:16,right:16),
-                    child: MultiSelectFormField(
-                      hintText: "Select Color for the Product",
-                      titleText: 'Select Colors',
-                      validator: (value) {
-                        return value == null || value.length == 0?'Please select one or more options':null;
-                      },
-                      dataSource: [
-                        {
-                          "display": "BEIGE",
-                          "value": "BEIGE",
+                    child: Card(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: MultiSelectFormField(
+                        hintText: "Select Color for the Product",
+                        titleText: 'Select Colors',
+                        border: InputBorder.none,
+                        validator: (value) {
+                          return value == null || value.length == 0?'Please select one or more options':null;
                         },
-                        {
-                          "display": "BROWN",
-                          "value": "BROWN",
+                        dataSource: [
+                          {
+                            "display": "BEIGE",
+                            "value": "BEIGE",
+                          },
+                          {
+                            "display": "BROWN",
+                            "value": "BROWN",
+                          },
+                          {
+                            "display": "CREAM",
+                            "value": "CREAM",
+                          },
+                          {
+                            "display": "GRAY",
+                            "value": "GRAY",
+                          },
+                          {
+                            "display": "LIGHT GRAY",
+                            "value": "LIGHT GRAY",
+                          },
+                          {
+                            "display": "WHITE",
+                            "value": "WHITE",
+                          },
+                        ],
+                        textField: 'display',
+                        valueField: 'value',
+                        okButtonLabel: 'OK',
+                        cancelButtonLabel: 'CANCEL',
+                        //value: _myActivities,
+                        onSaved: (value) {
+                          if (value == null) return;
+                          setState(() {
+                            _myActivities = value;
+                          });
                         },
-                        {
-                          "display": "CREAM",
-                          "value": "CREAM",
-                        },
-                        {
-                          "display": "GRAY",
-                          "value": "GRAY",
-                        },
-                        {
-                          "display": "LIGHT GRAY",
-                          "value": "LIGHT GRAY",
-                        },
-                        {
-                          "display": "WHITE",
-                          "value": "WHITE",
-                        },
-                      ],
-                      textField: 'display',
-                      valueField: 'value',
-                      okButtonLabel: 'OK',
-                      cancelButtonLabel: 'CANCEL',
-                      //value: _myActivities,
-                      onSaved: (value) {
-                        if (value == null) return;
-                        setState(() {
-                          _myActivities = value;
-                        });
-                      },
+                      ),
                     ),
                   ),
                 ),

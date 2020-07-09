@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Utils{
   static Future<PickedFile> getImage() async {

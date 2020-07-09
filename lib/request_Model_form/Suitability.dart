@@ -83,7 +83,6 @@ class _Suitability_State extends ResumableState<Suitability> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Suitability"),
-          backgroundColor: Color(0xFF004c4c),
         ),
         body:ListView(
           children: <Widget>[
