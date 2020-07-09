@@ -1,20 +1,22 @@
 import 'package:Arabian_Ceramics/Model/Product.dart';
+import 'package:Arabian_Ceramics/qrcode.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
 class DetailPage extends StatefulWidget {
  Product product;
-
- DetailPage(this.product);
+ String productId;
+ DetailPage(this.product,this.productId);
 
   @override
-  _DetailPageState createState() => _DetailPageState(product);
+  _DetailPageState createState() => _DetailPageState(product,productId);
 }
 
 class _DetailPageState extends State<DetailPage>{
    Product product;
-  _DetailPageState(this.product);
+   String productId;
+  _DetailPageState(this.product,this.productId);
   @override
   void initState() {
     super.initState();
@@ -23,7 +25,15 @@ class _DetailPageState extends State<DetailPage>{
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Product Details"),
+          title: Text("Request Details"),
+          actions: <Widget>[
+            product.status=='Produced'?InkWell(
+               child: Text("Generate QR Code"),
+              onTap: (){
+                 Navigator.push(context, MaterialPageRoute(builder: (context)=>GenerateedQrcode(productId)));
+              },
+            ):Container(),
+          ],
         ),
         body: Stack(
           children: <Widget>[

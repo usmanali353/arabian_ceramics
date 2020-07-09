@@ -53,6 +53,7 @@ class _Suitability_State extends ResumableState<Suitability> {
   void initState() {
     FirebaseAuth.instance.currentUser().then((user){
     this.user=user;
+
   });
     super.initState();
   }

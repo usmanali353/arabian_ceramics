@@ -188,8 +188,10 @@ class _ModelReState extends State<ModelRequests> {
                               });
                             }
                           });
+                        }else if(canScheduleProduction&&products[index].status=="Scheduled for Production"){
+                            showAlertChangeStatus(context, productId[index], products[index]);
                         }else{
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(products[index])));
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(products[index],productId[index])));
                         }
 
                     },
@@ -215,7 +217,7 @@ class _ModelReState extends State<ModelRequests> {
       child: Text("Go to Details"),
       onPressed: () {
         Navigator.pop(context);
-       Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(product)));
+       Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(product,productId)));
       },
     );
     Widget approveRejectButton = FlatButton(
@@ -231,7 +233,7 @@ class _ModelReState extends State<ModelRequests> {
          map.putIfAbsent("acmcapprovalbywhomName", () => users.name);
          map.putIfAbsent("acmcapprovaldate", () => DateFormat("yyyy-MM-dd").format(DateTime.now()));
          Firestore.instance.collection("model_requests").document(productId).updateData(map).then((value){
-
+          pd.hide();
            Flushbar(
              message: "Request Approved",
              backgroundColor: Colors.green,
@@ -322,6 +324,66 @@ class _ModelReState extends State<ModelRequests> {
         return alert;
       },
     );
+  }
+  showAlertChangeStatus(BuildContext context,String productId,Product product){
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget detailsPage = FlatButton(
+      child: Text("Go to Details"),
+      onPressed: () {
+        Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(product,productId)));
+      },
+    );
+    Widget changeStatus = FlatButton(
+      child: Text("Change Status"),
+      onPressed: () {
+        Navigator.pop(context);
+        Map<String,dynamic> map=Map();
+        map.putIfAbsent("status", () => 'Produced');
+        ProgressDialog pd=ProgressDialog(context);
+        pd.show();
+       Firestore.instance.collection("model_requests").document(productId).updateData(map).then((updateStatus){
+         pd.hide();
+         WidgetsBinding.instance
+             .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+         Flushbar(
+           message: "Status for Request changed to Produced",
+           duration: Duration(seconds: 5),
+           backgroundColor: Colors.green,
+         )..show(context);
+       }).catchError((onError){
+         pd.hide();
+         Flushbar(
+           message: onError.toString(),
+           duration: Duration(seconds: 5),
+           backgroundColor: Colors.red,
+         )..show(context);
+       });
+      },
+    );
+    AlertDialog alert = AlertDialog(
+      title: Text("Change Status of Request"),
+      content: Text("are you sure you want to change status to request to Produced?"),
+      actions: [
+        cancelButton,
+        detailsPage,
+        changeStatus,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+
   }
   Widget buildFloatingactionButtons(){
     if(isCustomer){
