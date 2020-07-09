@@ -1,5 +1,6 @@
 import 'package:Arabian_Ceramics/DetailPage.dart';
 import 'package:Arabian_Ceramics/Model/Product.dart';
+import 'package:Arabian_Ceramics/Model/Schedule.dart';
 import 'package:Arabian_Ceramics/Model/Users.dart';
 import 'package:Arabian_Ceramics/Users/Login.dart';
 import 'package:Arabian_Ceramics/Utils.dart';
@@ -137,21 +138,43 @@ class _ModelReState extends State<ModelRequests> {
                       showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 60))).then((selectedDate){
                         if(selectedDate!=null){
                           Map<String,dynamic> map=Map();
-                          map.putIfAbsent("scheduledOn", () => DateFormat("yyyy-MM-dd").format(selectedDate));
-                          map.putIfAbsent("scheduledById", () => userId);
-                          map.putIfAbsent("scheduledByName", () => users.name);
                           map.putIfAbsent("status", () => "Scheduled for Production");
                           ProgressDialog pd=ProgressDialog(context);
                           pd.show();
                           Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((value) {
-                            pd.hide();
-                            Flushbar(
-                              message: "request Scheduled",
-                              backgroundColor: Colors.green,
-                              duration: Duration(seconds: 5),
-                            )..show(context);
-                            WidgetsBinding.instance
-                                .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+                            Firestore.instance.collection("Schedules").document().setData(Schedule(
+                                scheduledById: userId,
+                                scheduledOn:DateFormat("yyyy-MM-dd").format(selectedDate),
+                                scheduledByName: users.name,
+                                requestedDate: products[index].requestDate,
+                                requesterId: products[index].requestedBy,
+                                name: products[index].name,
+                                surface: products[index].surface,
+                                thickness: products[index].thickness,
+                                size:products[index].size,
+                                range: products[index].range,
+                                material:products[index].material,
+                                colour: products[index].colour,
+                                technology: products[index].technology,
+                                structure: products[index].structure,
+                                edge: products[index].edge,
+                                classification: products[index].classification).toJson()).then((value){
+                                  pd.hide();
+                              Flushbar(
+                                message: "request Scheduled",
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 5),
+                              )..show(context);
+                              WidgetsBinding.instance
+                                  .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+                            }).catchError((onError){
+                              pd.hide();
+                              Flushbar(
+                                message: onError.toString(),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 5),
+                              )..show(context);
+                            });
                           }).catchError((onError){
                             pd.hide();
                             Flushbar(
