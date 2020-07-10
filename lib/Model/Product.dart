@@ -1,8 +1,7 @@
 class Product{
-  String name,surface,thickness,size,range,material,colour,technology,structure,edge,classification,suitibility, image,requestedBy,market,client,event,other,status,requestDate,requesterName;
+  String surface,thickness,size,range,material,colour,technology,structure,edge,classification,suitibility, image,requestedBy,market,client,event,other,status,requestDate,requesterName;
 
   Product({
-      this.name,
       this.surface,
       this.thickness,
       this.size,
@@ -26,7 +25,6 @@ class Product{
   });
   Map<String, dynamic> toJson() {
     var map = new Map<String, dynamic>();
-    map["name"] = name;
     map["surface"] = surface;
     map["thickness"] = thickness;
     map["size"] = size;
@@ -50,7 +48,6 @@ class Product{
     return map;
   }
   Product.fromMap(Map<dynamic,dynamic> data){
-    name=data['name'];
     surface=data['surface'];
     thickness=data['thickness'];
     size=data['size'];

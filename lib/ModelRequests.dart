@@ -131,9 +131,8 @@ class _ModelReState extends State<ModelRequests> {
                 children: <Widget>[
                   ListTile(
                     leading: Image.network(products[index].image),
-                    title: Text(products[index].name),
                     subtitle: Text(products[index].status),
-                    trailing: Text(products[index].requestDate),
+                    title: Text(products[index].requestDate),
                     onTap: (){
                         if(canApproveAcmc&&products[index].status=="New Request"){
                           showAlertDialog(context,products[index],productId[index]);
@@ -151,7 +150,6 @@ class _ModelReState extends State<ModelRequests> {
                                     scheduledByName: users.name,
                                     requestedDate: products[index].requestDate,
                                     requesterId: products[index].requestedBy,
-                                    name: products[index].name,
                                     surface: products[index].surface,
                                     thickness: products[index].thickness,
                                     size:products[index].size,

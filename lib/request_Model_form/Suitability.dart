@@ -17,7 +17,7 @@ import 'package:uuid/uuid.dart';
 
 
 class Suitability extends StatefulWidget{
-  String market,client,event,other,size,surface,name,thickness,classification,color,technology, structure, edge,range,material;
+  String market,client,event,other,size,surface,thickness,classification,color,technology,structure, edge,range,material;
 
   Suitability(
     this.market,
@@ -26,7 +26,6 @@ class Suitability extends StatefulWidget{
     this.other,
     this.size,
     this.surface,
-    this.name,
     this.thickness,
     this.classification,
     this.color,
@@ -38,7 +37,7 @@ class Suitability extends StatefulWidget{
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return _Suitability_State(market,client,event,other,size,surface,name,thickness,classification,color,technology, structure, edge,range,material);
+    return _Suitability_State(market,client,event,other,size,surface,thickness,classification,color,technology, structure, edge,range,material);
   }
 }
 
@@ -48,7 +47,7 @@ class _Suitability_State extends ResumableState<Suitability> {
   final formKey = new GlobalKey<FormState>();
   final fbKey = new GlobalKey<FormBuilderState>();
   FirebaseUser user;
-  String market,client,event,other,size,surface,name,thickness,classification,color,technology, structure, edge,range,material;
+  String market,client,event,other,size,surface,thickness,classification,color,technology, structure, edge,range,material;
  @override
   void initState() {
     FirebaseAuth.instance.currentUser().then((user){
@@ -65,7 +64,6 @@ class _Suitability_State extends ResumableState<Suitability> {
       this.other,
       this.size,
       this.surface,
-      this.name,
       this.thickness,
       this.classification,
       this.color,
@@ -207,7 +205,7 @@ class _Suitability_State extends ResumableState<Suitability> {
                                     uploadTask.onComplete.then((value){
                                       storageReference.getDownloadURL().then((downloadUrl){
                                         if(downloadUrl!=null){
-                                          Firestore.instance.collection("model_requests").document().setData(Product(name: name,surface: surface,edge: edge,classification: classification,structure: structure,market: market,client: client,event: event,technology: technology,other: other,suitibility:  _myActivitiesResult,material: material,image: downloadUrl,colour: color,range: range,requestedBy: user.uid,size: size,thickness: thickness,status:"New Request",requestDate:DateFormat("yyyy-MM-dd").format(DateTime.now())).toJson()).then((response){
+                                          Firestore.instance.collection("model_requests").document().setData(Product(surface: surface,edge: edge,classification: classification,structure: structure,market: market,client: client,event: event,technology: technology,other: other,suitibility:  _myActivitiesResult,material: material,image: downloadUrl,colour: color,range: range,requestedBy: user.uid,size: size,thickness: thickness,status:"New Request",requestDate:DateFormat("yyyy-MM-dd").format(DateTime.now())).toJson()).then((response){
                                             pd.hide();
                                             Scaffold.of(context).showSnackBar(SnackBar(
                                               content: Text("Request for Model Added"),

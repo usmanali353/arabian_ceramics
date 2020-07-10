@@ -49,39 +49,6 @@ class _SpecificationsState extends ResumableState<Specifications> {
             child: Column(
               children: <Widget>[
                 //ProductName Dropdown
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Visibility(
-                    child: Card(
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)
-                      ),
-                      child: FormBuilderDropdown(
-                        attribute: "Product Name",
-                        validators: [FormBuilderValidators.required()],
-                        hint: Text("Select Product"),
-                        items:product_name!=null?product_name.map((horse)=>DropdownMenuItem(
-                          child: Text(horse),
-                          value: horse,
-                        )).toList():[""].map((name) => DropdownMenuItem(
-                            value: name, child: Text("$name")))
-                            .toList(),
-                        style: Theme.of(context).textTheme.bodyText1,
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(16),
-                            border: InputBorder.none
-                        ),
-                        onChanged: (value){
-                          setState(() {
-                            this.selected_product_name=value;
-                            this.product_name_id=product_name.indexOf(value);
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ),
                 //Product Classification Dropdown
                 Padding(
                   padding: const EdgeInsets.only(left: 16,right:16,bottom: 16),
@@ -377,7 +344,7 @@ class _SpecificationsState extends ResumableState<Specifications> {
                           setState(() {
                             _myActivitiesResult = _myActivities.toString();
                           });
-                          push(context, MaterialPageRoute(builder: (context)=>designTopology(market,client,event,other,selected_size,selected_surface,selected_product_name,thickness.text,selected_classification,_myActivitiesResult)));
+                          push(context, MaterialPageRoute(builder: (context)=>designTopology(market,client,event,other,selected_size,selected_surface,thickness.text,selected_classification,_myActivitiesResult)));
                         }
                       },
                     ),

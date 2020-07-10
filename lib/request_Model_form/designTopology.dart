@@ -1,16 +1,16 @@
-import 'file:///C:/Users/IIB/AndroidStudioProjects/flutter_app/lib/request_Model_form/Suitability.dart';
+import 'package:Arabian_Ceramics/request_Model_form/Suitability.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:need_resume/need_resume.dart';
 class designTopology extends StatefulWidget {
-  String market,client,event,other,size,surface,name,thickness,classification,color;
+  String market,client,event,other,size,surface,thickness,classification,color;
 
   designTopology(this.market, this.client, this.event, this.other, this.size,
-      this.surface, this.name, this.thickness, this.classification, this.color);
+      this.surface, this.thickness, this.classification, this.color);
 
   @override
-  _designTopologyState createState() => _designTopologyState(market,client,event,other,size,surface,name,thickness,classification,color);
+  _designTopologyState createState() => _designTopologyState(market,client,event,other,size,surface,thickness,classification,color);
 }
 
 class _designTopologyState extends ResumableState<designTopology> {
@@ -28,7 +28,6 @@ int range_id, material_id,technology_id, structure_id, edge_id;
       this.other,
       this.size,
       this.surface,
-      this.name,
       this.thickness,
       this.classification,
       this.color);
@@ -61,8 +60,8 @@ int range_id, material_id,technology_id, structure_id, edge_id;
                           borderRadius: BorderRadius.circular(15)
                       ),
                       child: MultiSelectFormField(
-                        hintText: "Select Material",
-                        titleText: 'Select Material',
+                        hintText: "Select Design Topology",
+                        titleText: 'Select Design Topology',
                         border: InputBorder.none,
                         validator: (value) {
                           return value == null || value.length == 0?'Please select one or more options':null;
@@ -271,9 +270,21 @@ int range_id, material_id,technology_id, structure_id, edge_id;
                             selected_material=_myMaterials.toString();
                             print(selected_material);
                           });
-                          push(context, MaterialPageRoute(builder: (context)=>Suitability(market,client,event,other,size,surface,name,
-                              thickness,classification,color,selected_technology,
-                              selected_structure, selected_edge,selected_range,selected_material)));
+                          push(context, MaterialPageRoute(builder: (context)=>Suitability(
+                              market,
+                              client,
+                              event,
+                              other,
+                              size,
+                              surface,
+                              thickness,
+                              classification,
+                              color,
+                              selected_technology,
+                              selected_structure,
+                              selected_edge,
+                              selected_range,
+                              selected_material)));
                         }
                       },
                     ),

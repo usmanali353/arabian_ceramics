@@ -28,7 +28,10 @@ class _DetailPageState extends State<DetailPage>{
           title: Text("Request Details"),
           actions: <Widget>[
             product.status=='Produced'?InkWell(
-               child: Text("Generate QR Code"),
+               child: Padding(
+                 padding: const EdgeInsets.all(8.0),
+                 child: Center(child: Text("Generate QR Code")),
+               ),
               onTap: (){
                  Navigator.push(context, MaterialPageRoute(builder: (context)=>GenerateedQrcode(productId)));
               },
@@ -84,7 +87,7 @@ class _DetailPageState extends State<DetailPage>{
                             Padding(
                               padding: EdgeInsets.only(top: 4, bottom: 4),
                             ),
-                            Center(child: Text("Requested Item Info",
+                            Center(child: Text("Item Specifications",
                               style:
 //                              GoogleFonts.courgette(
 //                              textStyle: TextStyle(color: Colors.black, fontSize: 25),
@@ -98,13 +101,6 @@ class _DetailPageState extends State<DetailPage>{
                            Padding(
                              padding: EdgeInsets.only(top: 4, bottom: 4),
                            ),
-                            ListTile(
-                              title: Text("Item Name", style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),),
-                              trailing: Text(product.name),
-                            ),
-                           Divider(),
                            ListTile(
                               title: Text("Surface", style: TextStyle(
                                   fontWeight: FontWeight.bold,

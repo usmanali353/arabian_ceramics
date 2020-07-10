@@ -17,7 +17,7 @@ class _GenerateedQR extends State<GenerateedQrcode> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    appBar: AppBar(title: Text("Qr Code"),),
+    appBar: AppBar(title: Text("QR Code"),),
     body: Center(
      child: QrImage(
         data: requestId,

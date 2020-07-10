@@ -1,4 +1,4 @@
-import 'file:///C:/Users/IIB/AndroidStudioProjects/flutter_app/lib/Model/Product.dart';
+import 'package:Arabian_Ceramics/Model/Product.dart';
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,7 +37,7 @@ class _QRScanner_State extends State<QRScanner>{
           children: <Widget>[
 
             QrImage(
-              data: Product(name:'ARAGON CREAM',surface: 'GLOSSY',thickness:'9mm',size: '45x45 cm',range: 'DAR',material:'MARBLE',colour: 'BEIGE, BROWN',technology:'DIGITAL',structure: 'PLAIN',classification:'NATURAL',suitibility: 'RESIDENTIAL AREA,LIVING ROOM,BATHROOM',image: null).toJson().toString(),
+              data: Product(surface: 'GLOSSY',thickness:'9mm',size: '45x45 cm',range: 'DAR',material:'MARBLE',colour: 'BEIGE, BROWN',technology:'DIGITAL',structure: 'PLAIN',classification:'NATURAL',suitibility: 'RESIDENTIAL AREA,LIVING ROOM,BATHROOM',image: null).toJson().toString(),
               version: QrVersions.auto,
               size: 200.0,
             ),
