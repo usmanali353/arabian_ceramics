@@ -157,7 +157,7 @@ class _Suitability_State extends ResumableState<Suitability> {
                           child: _image == null ? Text('No image selected.') : Image.file(_image),
                         ),
                         MaterialButton(
-                          color: Colors.teal,
+                          color: Color(0xFF004c4c),
                           onPressed: (){
                             Utils.getImage().then((image_file){
                               if(image_file!=null){

@@ -8,8 +8,10 @@ class Assumptions extends StatefulWidget {
 }
 
 class _AssumptionsState extends ResumableState<Assumptions> {
-  TextEditingController market,event,client,other;
+  TextEditingController event,client,other;
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
+  List<String> marketList=['Local General','Local Exclusive','Export'];
+  String selectedMarket;
   @override
   void onResume() {
    Navigator.pop(context,'Refresh');
@@ -17,7 +19,6 @@ class _AssumptionsState extends ResumableState<Assumptions> {
   }
   @override
   void initState() {
-    market = TextEditingController();
     event=TextEditingController();
     client=TextEditingController();
     other=TextEditingController();
@@ -35,22 +36,34 @@ class _AssumptionsState extends ResumableState<Assumptions> {
             key: _fbKey,
             child: Column(
               children: <Widget>[
-                //Market TextBox
+                //Market Dropdown
                 Padding(
-                  padding: EdgeInsets.only(top: 16,left: 16,right: 16),
+                  padding: const EdgeInsets.only(top: 16,left: 16,right:16),
                   child: Card(
                     elevation: 10,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: FormBuilderTextField(
-                      controller: market,
+                    child: FormBuilderDropdown(
                       attribute: "Market",
                       validators: [FormBuilderValidators.required()],
-                      decoration: InputDecoration(hintText: "Market",
+                      hint: Text("Select Market"),
+                      items:marketList!=null?marketList.map((horse)=>DropdownMenuItem(
+                        child: Text(horse),
+                        value: horse,
+                      )).toList():[""].map((name) => DropdownMenuItem(
+                          value: name, child: Text("$name")))
+                          .toList(),
+                      style: Theme.of(context).textTheme.bodyText1,
+                      decoration: InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.all(16),
                       ),
+                      onChanged: (value){
+                        setState(() {
+                          this.selectedMarket=value;
+                        });
+                      },
                     ),
                   ),
                 ),
@@ -111,14 +124,13 @@ class _AssumptionsState extends ResumableState<Assumptions> {
                     ),
                   ),
                 ),
-
                 Center(
                   child: MaterialButton(
                     child: Text("Proceed",style: TextStyle(color: Colors.white),),
                     color: Color(0xFF004c4c),
                     onPressed: (){
                       if(_fbKey.currentState.validate()){
-                        push(context, MaterialPageRoute(builder: (context)=>Specifications(market.text,client.text,event.text,other.text)));
+                        push(context, MaterialPageRoute(builder: (context)=>Specifications(selectedMarket,client.text,event.text,other.text)));
                       }
                     },
                   ),

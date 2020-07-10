@@ -51,7 +51,7 @@ class _SpecificationsState extends ResumableState<Specifications> {
                 //ProductName Dropdown
                 //Product Classification Dropdown
                 Padding(
-                  padding: const EdgeInsets.only(left: 16,right:16,bottom: 16),
+                  padding: const EdgeInsets.only(top:16,left: 16,right:16,bottom: 16),
                   child: Card(
                     elevation: 10,
                     shape: RoundedRectangleBorder(

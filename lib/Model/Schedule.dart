@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Schedule{
-  String scheduledById,scheduledOn,scheduledByName,requesterId,requestedDate,name,surface,thickness,size,range,material,colour,technology,structure,edge,classification;
+  String scheduledById,scheduledOn,scheduledByName,requesterId,requestedDate,surface,thickness,size,range,material,colour,technology,structure,edge,classification;
 
   Schedule({
       this.scheduledById,
@@ -9,7 +9,6 @@ class Schedule{
       this.scheduledByName,
       this.requesterId,
       this.requestedDate,
-      this.name,
       this.surface,
       this.thickness,
       this.size,
@@ -29,7 +28,6 @@ class Schedule{
     map['scheduledByName']=scheduledByName;
     map['requesterId']=requesterId;
     //Scheduled Product Info
-    map["name"] = name;
     map["surface"] = surface;
     map["thickness"] = thickness;
     map["size"] = size;
@@ -50,7 +48,6 @@ class Schedule{
     requesterId=data['requesterId'];
     requestedDate=data['requestedDate'];
     //Scheduled Product Info
-    name=data['name'];
     surface=data['surface'];
     thickness=data['thickness'];
     size=data['size'];

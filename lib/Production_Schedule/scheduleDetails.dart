@@ -79,13 +79,6 @@ class _ScheduleDetailsState extends State<ScheduleDetails> {
                             ),
                           ),
                           ListTile(
-                            title: Text("Item Name", style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),),
-                            trailing: Text(scheduleData.name),
-                          ),
-                          Divider(),
-                          ListTile(
                             title: Text("Surface", style: TextStyle(
                               fontWeight: FontWeight.bold,
                             ),),
