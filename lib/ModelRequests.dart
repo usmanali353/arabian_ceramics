@@ -2,6 +2,7 @@ import 'package:Arabian_Ceramics/DetailPage.dart';
 import 'package:Arabian_Ceramics/Model/Product.dart';
 import 'package:Arabian_Ceramics/Model/Schedule.dart';
 import 'package:Arabian_Ceramics/Model/Users.dart';
+import 'package:Arabian_Ceramics/Observations.dart';
 import 'package:Arabian_Ceramics/Production_Schedule/SchedulesList.dart';
 import 'package:Arabian_Ceramics/Users/Login.dart';
 import 'package:Arabian_Ceramics/Utils.dart';
@@ -11,6 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:need_resume/need_resume.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class ModelRequests extends StatefulWidget {
@@ -22,7 +24,7 @@ class ModelRequests extends StatefulWidget {
   _ModelReState createState() => _ModelReState(user);
 }
 
-class _ModelReState extends State<ModelRequests> {
+class _ModelReState extends ResumableState<ModelRequests> {
   GlobalKey<RefreshIndicatorState> refreshIndicatorKey=GlobalKey();
   List<Product> products=[];
   List<String> productId=[];
@@ -33,7 +35,14 @@ class _ModelReState extends State<ModelRequests> {
   var selectedPreference;
   String userId;
   _ModelReState(this.users);
-
+@override
+  void onResume() {
+    if(resume.data.toString()=="Refresh"){
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+    }
+    super.onResume();
+  }
   @override
   void initState() {
     print(users.name);
@@ -188,6 +197,8 @@ class _ModelReState extends State<ModelRequests> {
                           });
                         }else if(canScheduleProduction&&products[index].status=="Scheduled for Production"){
                             showAlertChangeStatus(context, productId[index], products[index]);
+                        }else if(isCustomer&&products[index].status=="Produced"){
+                          showCustomerApprovalDialog(context, products[index], productId[index]);
                         }else{
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(products[index],productId[index])));
                         }
@@ -277,6 +288,73 @@ class _ModelReState extends State<ModelRequests> {
       },
     );
     // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Approve/Reject Model Request"),
+      content: StatefulBuilder(
+        builder: (context, setState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              RadioListTile(
+                title: Text("Approve"),
+                value: 'Approve',
+                groupValue: selectedPreference,
+                onChanged: (choice) {
+                  setState(() {
+                    this.selectedPreference = choice;
+                  });
+                },
+              ),
+              RadioListTile(
+                title: Text("Reject"),
+                value: 'Reject',
+                groupValue: selectedPreference,
+                onChanged: (choice) {
+                  setState(() {
+                    this.selectedPreference = choice;
+                  });
+                },
+              ),
+            ],
+          );
+        },
+      ),
+      actions: [
+        cancelButton,
+        detailsPage,
+        approveRejectButton
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+  showCustomerApprovalDialog(BuildContext context,Product product,String productId){
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget detailsPage = FlatButton(
+      child: Text("Go to Details"),
+      onPressed: () {
+        Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(product,productId)));
+      },
+    );
+    Widget approveRejectButton = FlatButton(
+      child: Text("Set"),
+      onPressed: () {
+        Navigator.pop(context);
+        push(context, MaterialPageRoute(builder: (context)=>Observations(selectedPreference,productId)));
+      },
+    );
     AlertDialog alert = AlertDialog(
       title: Text("Approve/Reject Model Request"),
       content: StatefulBuilder(

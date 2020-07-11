@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Schedule{
-  String scheduledById,scheduledOn,scheduledByName,requesterId,requestedDate,surface,thickness,size,range,material,colour,technology,structure,edge,classification;
+  String modelName,modelCode,scheduledById,scheduledOn,scheduledByName,requesterId,requestedDate,surface,thickness,size,range,material,colour,technology,structure,edge,classification;
 
   Schedule({
       this.scheduledById,
@@ -19,6 +19,9 @@ class Schedule{
       this.structure,
       this.edge,
       this.classification,
+      this.modelName,
+      this.modelCode,
+
   });
   Map<String, dynamic> toJson() {
     var map = new Map<String, dynamic>();
