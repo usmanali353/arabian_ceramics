@@ -284,21 +284,18 @@ class _SpecificationsState extends ResumableState<Specifications> {
                 //Product Thickness TextBox
                 Padding(
                   padding: EdgeInsets.only(top: 16,left: 16,right: 16),
-                  child: Visibility(
-                    visible: thicknessVisible,
-                    child: Card(
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: FormBuilderTextField(
-                        controller: thickness,
-                        attribute: "Thickness",
-                        validators: [FormBuilderValidators.required()],
-                        decoration: InputDecoration(hintText: "Thickness (cm)",
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.all(16),
-                        ),
+                  child: Card(
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: FormBuilderTextField(
+                      controller: thickness,
+                      attribute: "Thickness",
+                      validators: [FormBuilderValidators.required()],
+                      decoration: InputDecoration(hintText: "Thickness (cm)",
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(16),
                       ),
                     ),
                   ),
@@ -368,8 +365,9 @@ class _SpecificationsState extends ResumableState<Specifications> {
                       color: Color(0xFF004c4c),
                       child: Text("Proceed",style: TextStyle(color: Colors.white),),
                       onPressed: (){
-                        if(fbKey.currentState.validate()&&formKey.currentState.validate()){
+                        if(fbKey.currentState.validate()&&formKey.currentState.validate()&&formKey2.currentState.validate()){
                           formKey.currentState.save();
+                          formKey2.currentState.save();
                           setState(() {
                             _myActivitiesResult = _myActivities.toString();
                           });

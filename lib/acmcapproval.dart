@@ -42,7 +42,6 @@ class _acmcApprovalState extends State<acmcApproval> {
             key: fbKey,
             child: Column(
               children: <Widget>[
-
                 Form(
                   key: formState,
                   child: Padding(
@@ -130,50 +129,6 @@ class _acmcApprovalState extends State<acmcApproval> {
                     ),
                   ),
                 ),
-                Visibility(
-                  visible: status=="Approve",
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16,right: 16),
-                    child: Card(
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: FormBuilderTextField(
-                        attribute: "Model Name",
-                        controller: modelName,
-                        validators: [FormBuilderValidators.required()],
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(16),
-                            border: InputBorder.none,
-                            hintText: "Model Name"
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Visibility(
-                  visible: status=="Approve",
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16,right: 16,bottom: 16),
-                    child: Card(
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: FormBuilderTextField(
-                        attribute: "Model Code",
-                        controller: modelCode,
-                        validators: [FormBuilderValidators.required()],
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(16),
-                            border: InputBorder.none,
-                            hintText: "Model Code"
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
                 MaterialButton(
                   color: Color(0xFF004c4c),
                   child: Text("Proceed",style: TextStyle(color: Colors.white),),
@@ -217,8 +172,7 @@ class _acmcApprovalState extends State<acmcApproval> {
                         map.putIfAbsent("closeing_date", () => DateFormat("yyyy-MM-dd").format(closingDate));
                         map.putIfAbsent("designers", () => myDesigners.toString().replaceAll("[]]",''));
                         map.putIfAbsent("designer_observations", () => designerObservations.text);
-                        map.putIfAbsent("modelName", () => modelName.text);
-                        map.putIfAbsent("modelCode", () => modelCode.text);
+
                         Firestore.instance.collection("model_requests").document(productId).updateData(map).then((value){
                           pd.hide();
                           Navigator.pop(context,'Refresh');

@@ -7,6 +7,7 @@ import 'package:Arabian_Ceramics/Production_Schedule/SchedulesList.dart';
 import 'package:Arabian_Ceramics/Users/Login.dart';
 import 'package:Arabian_Ceramics/Utils.dart';
 import 'package:Arabian_Ceramics/acmcapproval.dart';
+import 'package:Arabian_Ceramics/productionCompleted.dart';
 import 'package:Arabian_Ceramics/request_Model_form/Assumptions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -376,27 +377,7 @@ class _ModelReState extends ResumableState<ModelRequests> {
       child: Text("Change Status"),
       onPressed: () {
         Navigator.pop(context);
-        Map<String,dynamic> map=Map();
-        map.putIfAbsent("status", () => 'Produced');
-        ProgressDialog pd=ProgressDialog(context);
-        pd.show();
-       Firestore.instance.collection("model_requests").document(productId).updateData(map).then((updateStatus){
-         pd.hide();
-         WidgetsBinding.instance
-             .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
-         Flushbar(
-           message: "Status for Request changed to Produced",
-           duration: Duration(seconds: 5),
-           backgroundColor: Colors.green,
-         )..show(context);
-       }).catchError((onError){
-         pd.hide();
-         Flushbar(
-           message: onError.toString(),
-           duration: Duration(seconds: 5),
-           backgroundColor: Colors.red,
-         )..show(context);
-       });
+        push(context, MaterialPageRoute(builder: (context)=>productionCompleted(productId)));
       },
     );
     AlertDialog alert = AlertDialog(
