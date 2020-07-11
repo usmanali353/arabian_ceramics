@@ -42,7 +42,7 @@ int range_id, material_id,technology_id, structure_id, edge_id;
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Design Topology"),
+        title: Text("More Specifications"),
       ),
       body: ListView(
         children: <Widget>[

@@ -16,13 +16,15 @@ class _SpecificationsState extends ResumableState<Specifications> {
   String market,client,event,other;
   TextEditingController thickness;
   bool sizeVisible=false,surfaceVisible=false,thicknessVisible=false;
-  List<String> size=[],surface=[], product_name =["Alma","Apollo","Aqua","Aragon","Arcadia","Area","Artic","Atrium","Avenue","Baikal","Barsha","Bistro","Bologna","Brada","Bronze","CalaCatta","Canica","Capri","carrara","Cement","Circle","Code","Coliseo","Cotto","Cotton","Daka","Darco","Dayana","Devon","Diverse","Dogana","Duomo","Finnis","Joly","Maria","Tiera","Venecia"],classification=["Floor Tiles","Floor Decor","Wall Tiles","Wall Decor"];
+  List<String> surface=[], product_name =["Alma","Apollo","Aqua","Aragon","Arcadia","Area","Artic","Atrium","Avenue","Baikal","Barsha","Bistro","Bologna","Brada","Bronze","CalaCatta","Canica","Capri","carrara","Cement","Circle","Code","Coliseo","Cotto","Cotton","Daka","Darco","Dayana","Devon","Diverse","Dogana","Duomo","Finnis","Joly","Maria","Tiera","Venecia"],classification=["Floor Tiles","Floor Decor","Wall Tiles","Wall Decor"];
+  List<dynamic> size=[];
   String selected_product_name, selected_surface, selected_size,selected_classification;
   int product_name_id, surface_id, size_id,classification_id;
   _SpecificationsState(this.market, this.client, this.event, this.other);
-  List _myActivities;
+  List _myActivities,sizes;
   String _myActivitiesResult;
   final formKey = new GlobalKey<FormState>();
+  final formKey2 = new GlobalKey<FormState>();
   final fbKey = new GlobalKey<FormBuilderState>();
   @override
   void onResume() {
@@ -133,44 +135,60 @@ class _SpecificationsState extends ResumableState<Specifications> {
                                 selected_size=null;
                                 size.clear();
                               }
-                              size.add('32 x 32');
+                              size.add(
+                                {"display":"32 x 32","value":"32 x 32"}
+                              );
                             }else if(selected_surface=="Mate"&&selected_classification=='Floor Decor'){
                               if(size.length>0){
                                 selected_size=null;
                                 size.clear();
                               }
-                              size.add('32 x 32');
+                              size.add(
+                                  {"display":"32 x 32","value":"32 x 32"}
+                              );
                             }else if(selected_surface=="Mate"&&selected_classification=='Wall Tiles'){
                               if(size.length>0){
                                 selected_size=null;
                                 size.clear();
-                              }
-                              size.add('25 x 40');
+                              } size.add(
+                                  {"display":"25 x 40","value":"25 x 40"}
+                              );
                             }else if(selected_surface=="Mate"&&selected_classification=='Wall Decor'){
                               if(size.length>0){
                                 selected_size=null;
                                 size.clear();
                               }
-                              size.add('25 x 40');
+                              size.add(
+                                  {"display":"25 x 40","value":"25 x 40"}
+                              );
                             }else if(selected_surface=="Glossy"&&selected_classification=='Floor Tiles'){
                               if(size.length>0){
                                 selected_size=null;
                                 size.clear();
                               }
-                              size.add('45 x 45');
-                              size.add('60 x 60');
+                              size.add(
+                                  {"display":"45 x 45","value":"45 x 45"},
+                              );
+                              size.add(
+                                  {"display":"60 x 60","value":"60 x 60"}
+                              );
+
                             }else if(selected_surface=="Glossy"&&selected_classification=='Floor Decor'){
                               if(size.length>0){
                                 selected_size=null;
                                 size.clear();
                               }
-                              size.add('45 x 45');
+                              size.add(
+                                  {"display":"45 x 45","value":"45 x 45"},
+                              );
                             }else if(selected_surface=="Glossy"&&selected_classification=='Wall Tiles'){
                               if(size.length>0){
                                 selected_size=null;
                                 size.clear();
                               }
-                              size.add('25 x 50');
+                              size.add(
+                                  {"display":"25 x 50","value":"25 x 50"},
+                              );
                             }else if(selected_surface=="Glossy"&&selected_classification=='Wall Decor'){
                               if(size.length>0){
                                 selected_size=null;
@@ -182,34 +200,45 @@ class _SpecificationsState extends ResumableState<Specifications> {
                                 selected_size=null;
                                 size.clear();
                               }
-                              size.add('32 x 32');
+                              size.add(
+                                  {"display":"32 x 32","value":"32 x 32"},
+                              );
                             }else if(selected_surface=="Plain"&&selected_classification=='Wall Tiles'){
                               if(size.length>0){
                                 selected_size=null;
                                 size.clear();
                               }
-                              size.add('25 x 40');
+                              size.add(
+                                  {"display":"25 x 40","value":"25 x 40"},
+                              );
                             }else if(selected_surface=="Structured"&&selected_classification=='Floor Tiles'){
                               if(size.length>0){
                                 selected_size=null;
                                 size.clear();
                               }
-                              size.add('45 x 45');
-                              size.add('60 x 60');
+                              size.add(
+                                  {"display":"45 x 45","value":"45 x 45"},
+                              );
+                              size.add(
+                                  {"display":"60 x 60","value":"60 x 60"},
+                              );
                             }else  if(selected_surface=="Structured"&&selected_classification=='Wall Tiles'){
                               if(size.length>0){
                                 selected_size=null;
                                 size.clear();
                               }
-                              size.add('25 x 50');
+                              size.add(
+                                  {"display":"25 x 50","value":"25 x 50"},
+                              );
                             }else  if(selected_surface=="Outdoor"&&selected_classification=='Floor Tiles'){
                               if(size.length>0){
                                 selected_size=null;
                                 size.clear();
                               }
-                              size.add('60 x 60');
+                              size.add(
+                                  {"display":"60 x 60","value":"60 x 60"}
+                              );
                             }
-
                           });
                         },
                       ),
@@ -221,33 +250,33 @@ class _SpecificationsState extends ResumableState<Specifications> {
                   padding: const EdgeInsets.only(top: 16,left: 16,right: 16),
                   child: Visibility(
                     visible: sizeVisible,
-                    child: Card(
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: FormBuilderDropdown(
-                        attribute: "Size",
-                        validators: [FormBuilderValidators.required()],
-                        hint: Text("Size (cm)"),
-                        items:size!=null?size.map((horse)=>DropdownMenuItem(
-                          child: Text(horse),
-                          value: horse,
-                        )).toList():[""].map((name) => DropdownMenuItem(
-                            value: name, child: Text("$name")))
-                            .toList(),
-                        style: Theme.of(context).textTheme.bodyText1,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.all(16),
+                    child: Form(
+                      key: formKey2,
+                      child: Card(
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
                         ),
-                        onChanged: (value){
-                          setState(() {
-                            thicknessVisible=true;
-                            this.selected_size=value;
-                            this.size_id=size.indexOf(value);
-                          });
-                        },
+                        child: MultiSelectFormField(
+                          hintText: "Select Sizes for the Product",
+                          titleText: 'Select Sizes',
+                          border: InputBorder.none,
+                          validator: (value) {
+                            return value == null || value.length == 0?'Please select one or more options':null;
+                          },
+                          dataSource: size,
+                          textField: 'display',
+                          valueField: 'value',
+                          okButtonLabel: 'OK',
+                          cancelButtonLabel: 'CANCEL',
+                          onSaved: (value) {
+                            if (value == null) return;
+                            setState(() {
+                              sizes = value;
+                            });
+                          },
+
+                        ),
                       ),
                     ),
                   ),
@@ -344,7 +373,7 @@ class _SpecificationsState extends ResumableState<Specifications> {
                           setState(() {
                             _myActivitiesResult = _myActivities.toString();
                           });
-                          push(context, MaterialPageRoute(builder: (context)=>designTopology(market,client,event,other,selected_size,selected_surface,thickness.text,selected_classification,_myActivitiesResult)));
+                          push(context, MaterialPageRoute(builder: (context)=>designTopology(market,client,event,other,sizes.toString().replaceAll("[]", ''),selected_surface,thickness.text,selected_classification,_myActivitiesResult)));
                         }
                       },
                     ),

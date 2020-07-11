@@ -1,5 +1,5 @@
 class Product{
-  String modelName,modelCode,surface,thickness,size,range,material,colour,technology,structure,edge,classification,suitibility, image,requestedBy,market,client,event,other,status,requestDate,requesterName;
+  String modelName,modelCode,surface,thickness,size,range,material,colour,technology,structure,edge,classification,suitibility, image,market,client,event,other,status,requestDate,designers,designersObservations,technical_consideration;
 
   Product({
       this.surface,
@@ -14,16 +14,17 @@ class Product{
       this.classification,
       this.suitibility,
       this.image,
-      this.requestedBy,
       this.market,
       this.client,
       this.event,
       this.other,
       this.status,
       this.requestDate,
-      this.requesterName,
       this.modelName,
       this.modelCode,
+     this.designers,
+     this.designersObservations,
+     this.technical_consideration,
   });
   Map<String, dynamic> toJson() {
     var map = new Map<String, dynamic>();
@@ -39,16 +40,17 @@ class Product{
     map["classification"] = classification;
     map["suitibility"] = suitibility;
     map["image"] = image;
-    map['requestedBy']=requestedBy;
     map["market"]=market;
     map["client"]=client;
     map["event"]=event;
     map["other"]=other;
     map["status"]=status;
     map["requestDate"]=requestDate;
-    map['requesterName']=requesterName;
     map['modelName']=modelName;
     map['modelCode']=modelCode;
+    map['designers']=designers;
+    map['designers_observations']=designersObservations;
+    map['technical_consideration']=technical_consideration;
     return map;
   }
   Product.fromMap(Map<dynamic,dynamic> data){
@@ -64,15 +66,16 @@ class Product{
     classification=data['classification'];
     suitibility=data['suitibility'];
     image=data['image'];
-    requestedBy=data['requestedBy'];
     market = data["market"];
     client = data["client"];
     event=data["event"];
     other=data["other"];
     requestDate=data["requestDate"];
     status=data["status"];
-    requesterName=data['requesterName'];
     modelName=data['modelName'];
     modelCode=data['modelCode'];
+    designers=data['designers'];
+    designersObservations=data['designers_observations'];
+    technical_consideration=data['technical_consideration'];
   }
 }

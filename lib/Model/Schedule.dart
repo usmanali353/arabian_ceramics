@@ -41,6 +41,8 @@ class Schedule{
     map["structure"] = structure;
     map["edge"] = edge;
     map["classification"] = classification;
+    map['modelName']=modelName;
+    map['modelCode']=modelCode;
     return map;
   }
   Schedule.fromMap(Map<dynamic,dynamic> data){
@@ -61,5 +63,7 @@ class Schedule{
     structure=data['structure'];
     edge=data['edge'];
     classification=data['classification'];
+    modelName = data['modelName'];
+    modelCode = data['modelCode'];
   }
 }

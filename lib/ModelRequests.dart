@@ -6,6 +6,7 @@ import 'package:Arabian_Ceramics/Observations.dart';
 import 'package:Arabian_Ceramics/Production_Schedule/SchedulesList.dart';
 import 'package:Arabian_Ceramics/Users/Login.dart';
 import 'package:Arabian_Ceramics/Utils.dart';
+import 'package:Arabian_Ceramics/acmcapproval.dart';
 import 'package:Arabian_Ceramics/request_Model_form/Assumptions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -154,11 +155,12 @@ class _ModelReState extends ResumableState<ModelRequests> {
                               pd.show();
                               Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((value) {
                                 Firestore.instance.collection("Schedules").document().setData(Schedule(
+                                    modelName: products[index].modelName,
+                                    modelCode: products[index].modelCode,
                                     scheduledById: userId,
                                     scheduledOn:DateFormat("yyyy-MM-dd").format(selectedDate),
                                     scheduledByName: users.name,
                                     requestedDate: products[index].requestDate,
-                                    requesterId: products[index].requestedBy,
                                     surface: products[index].surface,
                                     thickness: products[index].thickness,
                                     size:products[index].size,
@@ -234,56 +236,11 @@ class _ModelReState extends ResumableState<ModelRequests> {
       onPressed: () {
        if(selectedPreference=="Approve"){
          Navigator.pop(context);
-         ProgressDialog pd=ProgressDialog(context);
-         pd.show();
-         Map<String,dynamic> map=Map();
-         map.putIfAbsent("status", () => "Approved by ACMC");
-         map.putIfAbsent("acmcapprovalbywhomId", () => userId);
-         map.putIfAbsent("acmcapprovalbywhomName", () => users.name);
-         map.putIfAbsent("acmcapprovaldate", () => DateFormat("yyyy-MM-dd").format(DateTime.now()));
-         Firestore.instance.collection("model_requests").document(productId).updateData(map).then((value){
-          pd.hide();
-           Flushbar(
-             message: "Request Approved",
-             backgroundColor: Colors.green,
-             duration: Duration(seconds: 5),
-           )..show(context);
-           WidgetsBinding.instance
-               .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
-         }).catchError((onError){
-           pd.hide();
-           Flushbar(
-             message: onError.toString(),
-             backgroundColor: Colors.red,
-             duration: Duration(seconds: 5),
-           )..show(context);
-         });
+         push(context, MaterialPageRoute(builder: (context)=>acmcApproval(selectedPreference,productId,users.name,userId)));
+
        }else if(selectedPreference=="Reject"){
          Navigator.pop(context);
-         ProgressDialog pd=ProgressDialog(context);
-         pd.show();
-         Map<String,dynamic> map=Map();
-         map.putIfAbsent("status", () => "Rejected by ACMC");
-         map.putIfAbsent("acmcrejectedbywhomId", () => userId);
-         map.putIfAbsent("acmcrejectedbywhomName", () => users.name);
-         map.putIfAbsent("acmcrejectiondate", () => DateFormat("yyyy-MM-dd").format(DateTime.now()));
-         Firestore.instance.collection("model_requests").document(productId).updateData(map).then((value){
-           pd.hide();
-           Flushbar(
-             message: "Request Rejected",
-             backgroundColor: Colors.green,
-             duration: Duration(seconds: 5),
-           )..show(context);
-           WidgetsBinding.instance
-               .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
-         }).catchError((onError){
-           pd.hide();
-           Flushbar(
-             message: onError.toString(),
-             backgroundColor: Colors.red,
-             duration: Duration(seconds: 5),
-           )..show(context);
-         });
+         push(context, MaterialPageRoute(builder: (context)=>acmcApproval(selectedPreference,productId,users.name,userId)));
        }
       },
     );
@@ -466,14 +423,14 @@ class _ModelReState extends ResumableState<ModelRequests> {
       return FloatingActionButton(
           child: Icon(Icons.add),
     onPressed: (){
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>Assumptions()));
+    push(context, MaterialPageRoute(builder: (context)=>Assumptions()));
     },
       );
     }else if(canScheduleProduction)
       return FloatingActionButton(
         child: Icon(Icons.list),
         onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>SchedulesList()));
+          push(context, MaterialPageRoute(builder: (context)=>SchedulesList()));
         },
       );
   }

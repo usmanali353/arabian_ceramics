@@ -42,7 +42,7 @@ class _ObservationsState extends State<Observations> {
                       attribute: "Commercial Observation",
                       controller: observation,
                       validators: [FormBuilderValidators.required()],
-                      maxLength: 1000,
+                      maxLines: 8,
                       decoration: InputDecoration(
                         hintText: "Commercial Observation",
                         contentPadding: EdgeInsets.all(16),

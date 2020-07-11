@@ -47,12 +47,13 @@ class _Suitability_State extends ResumableState<Suitability> {
   final formKey = new GlobalKey<FormState>();
   final fbKey = new GlobalKey<FormBuilderState>();
   FirebaseUser user;
+  TextEditingController technical_consideration;
   String market,client,event,other,size,surface,thickness,classification,color,technology, structure, edge,range,material;
  @override
   void initState() {
+   technical_consideration=TextEditingController();
     FirebaseAuth.instance.currentUser().then((user){
     this.user=user;
-
   });
     super.initState();
   }
@@ -144,7 +145,26 @@ class _Suitability_State extends ResumableState<Suitability> {
                       ),
                     ),
                   ),
-
+                   Padding(
+                     padding: EdgeInsets.only(top:16,left:16,right: 16),
+                     child: Card(
+                       elevation: 10,
+                       shape: RoundedRectangleBorder(
+                         borderRadius: BorderRadius.circular(15),
+                       ),
+                       child: FormBuilderTextField(
+                         attribute: "Technical Consideration",
+                         controller: technical_consideration,
+                         maxLines: 8,
+                         validators: [FormBuilderValidators.required()],
+                         decoration: InputDecoration(
+                             contentPadding: EdgeInsets.all(16),
+                             border: InputBorder.none,
+                             hintText: "Technical Consideration"
+                         ),
+                       ),
+                     ),
+                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Row(
@@ -205,7 +225,7 @@ class _Suitability_State extends ResumableState<Suitability> {
                                     uploadTask.onComplete.then((value){
                                       storageReference.getDownloadURL().then((downloadUrl){
                                         if(downloadUrl!=null){
-                                          Firestore.instance.collection("model_requests").document().setData(Product(surface: surface,edge: edge,classification: classification,structure: structure,market: market,client: client,event: event,technology: technology,other: other,suitibility:  _myActivitiesResult,material: material,image: downloadUrl,colour: color,range: range,requestedBy: user.uid,size: size,thickness: thickness,status:"New Request",requestDate:DateFormat("yyyy-MM-dd").format(DateTime.now())).toJson()).then((response){
+                                          Firestore.instance.collection("model_requests").document().setData(Product(surface: surface,edge: edge,classification: classification,structure: structure,market: market,client: client,event: event,technology: technology,other: other,suitibility:  _myActivitiesResult,material: material,image: downloadUrl,colour: color,range: range,size: size,thickness: thickness,status:"New Request",requestDate:DateFormat("yyyy-MM-dd").format(DateTime.now()),technical_consideration: technical_consideration.text).toJson()).then((response){
                                             pd.hide();
                                             Scaffold.of(context).showSnackBar(SnackBar(
                                               content: Text("Request for Model Added"),

@@ -11,7 +11,8 @@ class _AssumptionsState extends ResumableState<Assumptions> {
   TextEditingController event,client,other;
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
   List<String> marketList=['Local General','Local Exclusive','Export'];
-  String selectedMarket;
+  List<String> clientList=['Client 1','Client 2','Client 3','Other'];
+  String selectedMarket,selectedClient="'Client 1";
   @override
   void onResume() {
    Navigator.pop(context,'Refresh');
@@ -86,21 +87,55 @@ class _AssumptionsState extends ResumableState<Assumptions> {
                     ),
                   ),
                 ),
-                // Client TextBox
+                // Client Dropdown
                 Padding(
-                  padding: EdgeInsets.only(top: 16,left: 16,right: 16),
+                  padding: const EdgeInsets.only(top: 16,left: 16,right:16),
                   child: Card(
                     elevation: 10,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: FormBuilderTextField(
-                      controller: client,
+                    child: FormBuilderDropdown(
                       attribute: "Client",
                       validators: [FormBuilderValidators.required()],
-                      decoration: InputDecoration(hintText: "Client",
+                      hint: Text("Select Client"),
+                      items:clientList!=null?clientList.map((horse)=>DropdownMenuItem(
+                        child: Text(horse),
+                        value: horse,
+                      )).toList():[""].map((name) => DropdownMenuItem(
+                          value: name, child: Text("$name")))
+                          .toList(),
+                      style: Theme.of(context).textTheme.bodyText1,
+                      decoration: InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.all(16),
+                      ),
+                      onChanged: (value){
+                        setState(() {
+                          this.selectedClient=value;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                // Client TextBox
+                Visibility(
+                  visible: selectedClient=="Other",
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 16,left: 16,right: 16),
+                    child: Card(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: FormBuilderTextField(
+                        controller: client,
+                        attribute: "Client",
+                        validators: [FormBuilderValidators.required()],
+                        decoration: InputDecoration(hintText: "Client",
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(16),
+                        ),
                       ),
                     ),
                   ),
@@ -130,7 +165,7 @@ class _AssumptionsState extends ResumableState<Assumptions> {
                     color: Color(0xFF004c4c),
                     onPressed: (){
                       if(_fbKey.currentState.validate()){
-                        push(context, MaterialPageRoute(builder: (context)=>Specifications(selectedMarket,client.text,event.text,other.text)));
+                        push(context, MaterialPageRoute(builder: (context)=>Specifications(selectedMarket,selectedClient=="Other"?client.text:selectedClient,event.text,other.text)));
                       }
                     },
                   ),
