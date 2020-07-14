@@ -114,7 +114,6 @@ class _newProductListState extends State<newProductList> {
                           title: Text("Status"),
                           subtitle: Text(newProducts[index].status),
                         ),
-                        Divider(),
                       ],
                     ),
                     Divider(),

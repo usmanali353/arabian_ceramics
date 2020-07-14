@@ -49,7 +49,7 @@ class Product{
     map['modelName']=modelName;
     map['modelCode']=modelCode;
     map['designers']=designers;
-    map['designers_observations']=designersObservations;
+    map['designer_observations']=designersObservations;
     map['technical_consideration']=technical_consideration;
     map['closeing_date']=closeing_date;
 
@@ -77,7 +77,7 @@ class Product{
     modelName=data['modelName'];
     modelCode=data['modelCode'];
     designers=data['designers'];
-    designersObservations=data['designers_observations'];
+    designersObservations=data['designer_observations'];
     technical_consideration=data['technical_consideration'];
     closeing_date= data['closeing_date'];
   }

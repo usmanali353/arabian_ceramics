@@ -279,7 +279,7 @@ int range_id, material_id,technology_id, structure_id, edge_id;
                               surface,
                               thickness,
                               classification,
-                              color,
+                              color.replaceAll("[", '').replaceAll(']', ''),
                               selected_technology,
                               selected_structure,
                               selected_edge,

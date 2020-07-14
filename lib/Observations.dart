@@ -67,7 +67,7 @@ class _ObservationsState extends State<Observations> {
                           map.putIfAbsent("status", () => 'Rejected by Customer');
                           map.putIfAbsent("customerRejectionDate", () => DateFormat("yyyy-MM-dd").format(DateTime.now()));
                         }
-                        map.putIfAbsent("commercial_observation", () => observation.text);
+                        map.putIfAbsent("customer_observation", () => observation.text);
 
                         Firestore.instance.collection("model_requests").document(productId).updateData(map).then((updated){
                            pd.hide();

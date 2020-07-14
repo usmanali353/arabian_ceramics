@@ -84,6 +84,25 @@ class _DetailPageState extends State<DetailPage>{
                               trailing: Text(product.status),
                             ),
                             Divider(),
+                            ListTile(
+                              title: Text("Closing Date",style: TextStyle(fontWeight: FontWeight.bold),),
+                              trailing: Text(product.closeing_date!=null?product.closeing_date:''),
+                            ),
+                            Divider(),
+                            product.designers!=null&&product.designersObservations!=null?Column(
+                              children: <Widget>[
+                                ListTile(
+                                  title: Text("Designers",style: TextStyle(fontWeight: FontWeight.bold),),
+                                  trailing: Text(product.designers.replaceAll("[", '').replaceAll("]", '')),
+                                ),
+                                Divider(),
+                                ListTile(
+                                  title: Text("Designers Observations",style: TextStyle(fontWeight: FontWeight.bold),),
+                                  subtitle: Text(product.designersObservations),
+                                ),
+                                Divider(),
+                              ],
+                            ):Container(),
                             Padding(
                               padding: EdgeInsets.only(top: 4, bottom: 4),
                             ),

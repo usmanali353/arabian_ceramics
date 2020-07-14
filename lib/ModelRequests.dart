@@ -543,7 +543,6 @@ class _ModelReState extends ResumableState<ModelRequests> {
       actions: [
         cancelBtn,
         searchBtn,
-
       ],
     );
 
