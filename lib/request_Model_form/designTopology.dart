@@ -275,7 +275,7 @@ int range_id, material_id,technology_id, structure_id, edge_id;
                               client,
                               event,
                               other,
-                              size,
+                              size.replaceAll("[", '').replaceAll(']', ''),
                               surface,
                               thickness,
                               classification,
@@ -284,7 +284,7 @@ int range_id, material_id,technology_id, structure_id, edge_id;
                               selected_structure,
                               selected_edge,
                               selected_range,
-                              selected_material)));
+                              selected_material.replaceAll("[", '').replaceAll(']', ''))));
                         }
                       },
                     ),

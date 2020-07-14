@@ -7,12 +7,15 @@ import 'package:Arabian_Ceramics/Production_Schedule/SchedulesList.dart';
 import 'package:Arabian_Ceramics/Users/Login.dart';
 import 'package:Arabian_Ceramics/Utils.dart';
 import 'package:Arabian_Ceramics/acmcapproval.dart';
+import 'package:Arabian_Ceramics/newproductsList.dart';
 import 'package:Arabian_Ceramics/productionCompleted.dart';
 import 'package:Arabian_Ceramics/request_Model_form/Assumptions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:need_resume/need_resume.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -29,12 +32,12 @@ class ModelRequests extends StatefulWidget {
 class _ModelReState extends ResumableState<ModelRequests> {
   GlobalKey<RefreshIndicatorState> refreshIndicatorKey=GlobalKey();
   List<Product> products=[];
-  List<String> productId=[];
+  List<String> productId=[],status=['All','New Request','Approved by ACMC','Rejected by ACMC','Scheduled','Approved by Customer','Rejected by Customer'];
   Users users;
   bool isCustomer=false;
   bool canScheduleProduction=false;
   bool canApproveAcmc=false;
-  var selectedPreference;
+  var selectedPreference,selectedStatus;
   String userId;
   _ModelReState(this.users);
 @override
@@ -75,22 +78,73 @@ class _ModelReState extends ResumableState<ModelRequests> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: Column(
+          children: <Widget>[
+            Container(
+              color: Color(0xEBECF0),
+              alignment: Alignment.topCenter,
+              child: DrawerHeader(
+                child:  Image.asset("Assets/img/AC.png",width: 200,height: 200,),
+              ),
+            ),
+           Expanded(
+             child: ListView(
+                padding: EdgeInsets.zero,
+               children: <Widget>[
+                 isCustomer?Column(
+                   children: <Widget>[
+                     ListTile(
+                       title: Text("Products for Trial"),
+                       leading: FaIcon(FontAwesomeIcons.box),
+                       onTap: (){
+                         Navigator.push(context, MaterialPageRoute(builder: (context)=>newProductList()));
+                       },
+                     ),
+                     Divider(),
+                     ListTile(
+                       title: Text("Sign Out"),
+                       leading: FaIcon(FontAwesomeIcons.signOutAlt),
+                       onTap: (){
+                         FirebaseAuth.instance.signOut();
+                         SharedPreferences.getInstance().then((prefs){
+                           prefs.remove("user_id");
+                         });
+                         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>LoginScreen()), (route) => false);
+                       },
+                     ),
+                     Divider(),
+                   ],
+                 ):ListTile(
+                   title: Text("Sign Out"),
+                   leading: FaIcon(FontAwesomeIcons.signOutAlt),
+                   onTap: (){
+                     FirebaseAuth.instance.signOut();
+                     SharedPreferences.getInstance().then((prefs){
+                       prefs.remove("user_id");
+                     });
+                     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>LoginScreen()), (route) => false);
+                   },
+                 ),
+                 Divider(),
+               ],
+             ),
+           )
+          ],
+        ),
+      ),
       floatingActionButton: buildFloatingactionButtons(),
       appBar: AppBar(
           title:Text("Model Requests"),
         actions: <Widget>[
           PopupMenuButton<String>(
             onSelected: (choice){
-              if(choice=='Sign Out'){
-                FirebaseAuth.instance.signOut();
-                SharedPreferences.getInstance().then((prefs){
-                   prefs.remove("user_id");
-                });
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>LoginScreen()), (route) => false);
+              if(choice=='Sort by Status'){
+                showStatusAlertDialog(context);
               }
             },
             itemBuilder: (BuildContext context){
-              return ['Sign Out'].map((String choice){
+              return ['Sort by Status'].map((String choice){
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Text(choice),
@@ -156,12 +210,10 @@ class _ModelReState extends ResumableState<ModelRequests> {
                               pd.show();
                               Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((value) {
                                 Firestore.instance.collection("Schedules").document().setData(Schedule(
-                                    modelName: products[index].modelName,
-                                    modelCode: products[index].modelCode,
                                     scheduledById: userId,
                                     scheduledOn:DateFormat("yyyy-MM-dd").format(selectedDate),
-                                    scheduledByName: users.name,
                                     requestedDate: products[index].requestDate,
+                                    scheduledByName: users.name,
                                     surface: products[index].surface,
                                     thickness: products[index].thickness,
                                     size:products[index].size,
@@ -414,5 +466,93 @@ class _ModelReState extends ResumableState<ModelRequests> {
           push(context, MaterialPageRoute(builder: (context)=>SchedulesList()));
         },
       );
+  }
+  showStatusAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget searchBtn = FlatButton(
+      child: Text("Search"),
+      onPressed:  () {
+        Navigator.pop(context);
+        if(selectedStatus=='All'){
+          WidgetsBinding.instance
+              .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+        }else{
+          Firestore.instance.collection("model_requests").where("status",isEqualTo:selectedStatus).getDocuments().then((querySnapshot){
+            if(querySnapshot.documents.length>0){
+              setState(() {
+                if(products.length>0){
+                  products.clear();
+                }
+                if(productId.length>0){
+                  productId.clear();
+                }
+                products.addAll(querySnapshot.documents.map((e) => Product.fromMap(e.data)).toList());
+                for(int i=0;i<querySnapshot.documents.length;i++){
+                  productId.add(querySnapshot.documents[i].documentID);
+                }
+              });
+            }else{
+              Flushbar(
+                message: "No Request Found According to the Status",
+                backgroundColor: Colors.red,
+                duration: Duration(seconds: 5),
+              )..show(context);
+            }
+          });
+        }
+
+      },
+    );
+    Widget cancelBtn = FlatButton(
+      child: Text("Cancel"),
+      onPressed:  () {
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Filter by Status"),
+      content:FormBuilder(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              FormBuilderDropdown(
+                attribute: "Select Status",
+                hint: Text("Select Status"),
+                items: status!=null?status.map((plans)=>DropdownMenuItem(
+                  child: Text(plans),
+                  value: plans,
+                )).toList():[""].map((name) => DropdownMenuItem(
+                    value: name, child: Text("$name")))
+                    .toList(),
+                onChanged: (value){
+                  setState(() {
+                    this.selectedStatus=value;
+                  });
+                },
+                style: Theme.of(context).textTheme.bodyText1.merge(TextStyle(fontSize: 11)),
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(16),
+                ),
+
+              ),
+            ],
+          )
+      ),
+      actions: [
+        cancelBtn,
+        searchBtn,
+
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

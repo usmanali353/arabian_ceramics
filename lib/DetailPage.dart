@@ -27,7 +27,7 @@ class _DetailPageState extends State<DetailPage>{
         appBar: AppBar(
           title: Text("Request Details"),
           actions: <Widget>[
-            product.status=='Produced'?InkWell(
+            product.status=='Produced'||product.status=='Approved by Customer'?InkWell(
                child: Padding(
                  padding: const EdgeInsets.all(8.0),
                  child: Center(child: Text("Generate QR Code")),

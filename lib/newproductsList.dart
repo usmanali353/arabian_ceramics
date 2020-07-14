@@ -105,6 +105,16 @@ class _newProductListState extends State<newProductList> {
                           subtitle: Text(newProducts[index].material.replaceAll('[', '').replaceAll(']', '')),
                         ),
                         Divider(),
+                        ListTile(
+                          title: Text("Closing Date"),
+                          subtitle: Text(newProducts[index].closeing_date),
+                        ),
+                        Divider(),
+                        ListTile(
+                          title: Text("Status"),
+                          subtitle: Text(newProducts[index].status),
+                        ),
+                        Divider(),
                       ],
                     ),
                     Divider(),

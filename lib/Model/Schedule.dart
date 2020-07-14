@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
 class Schedule{
-  String modelName,modelCode,scheduledById,scheduledOn,scheduledByName,requesterId,requestedDate,surface,thickness,size,range,material,colour,technology,structure,edge,classification;
+  String scheduledById,scheduledOn,scheduledByName,requestedDate,surface,thickness,size,range,material,colour,technology,structure,edge,classification;
 
   Schedule({
       this.scheduledById,
       this.scheduledOn,
       this.scheduledByName,
-      this.requesterId,
       this.requestedDate,
       this.surface,
       this.thickness,
@@ -19,9 +18,6 @@ class Schedule{
       this.structure,
       this.edge,
       this.classification,
-      this.modelName,
-      this.modelCode,
-
   });
   Map<String, dynamic> toJson() {
     var map = new Map<String, dynamic>();
@@ -29,7 +25,6 @@ class Schedule{
     map['scheduledById']=scheduledById;
     map['scheduledOn']=scheduledOn;
     map['scheduledByName']=scheduledByName;
-    map['requesterId']=requesterId;
     //Scheduled Product Info
     map["surface"] = surface;
     map["thickness"] = thickness;
@@ -41,8 +36,6 @@ class Schedule{
     map["structure"] = structure;
     map["edge"] = edge;
     map["classification"] = classification;
-    map['modelName']=modelName;
-    map['modelCode']=modelCode;
     return map;
   }
   Schedule.fromMap(Map<dynamic,dynamic> data){
@@ -50,7 +43,6 @@ class Schedule{
     scheduledById=data['scheduledById'];
     scheduledOn=data['scheduledOn'];
     scheduledByName=data['scheduledByName'];
-    requesterId=data['requesterId'];
     requestedDate=data['requestedDate'];
     //Scheduled Product Info
     surface=data['surface'];
@@ -63,7 +55,5 @@ class Schedule{
     structure=data['structure'];
     edge=data['edge'];
     classification=data['classification'];
-    modelName = data['modelName'];
-    modelCode = data['modelCode'];
   }
 }
