@@ -293,6 +293,7 @@ class _SpecificationsState extends ResumableState<Specifications> {
                       controller: thickness,
                       attribute: "Thickness",
                       validators: [FormBuilderValidators.required()],
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
                       decoration: InputDecoration(hintText: "Thickness (cm)",
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.all(16),
@@ -371,7 +372,7 @@ class _SpecificationsState extends ResumableState<Specifications> {
                           setState(() {
                             _myActivitiesResult = _myActivities.toString();
                           });
-                          push(context, MaterialPageRoute(builder: (context)=>designTopology(market,client,event,other,sizes.toString().replaceAll("[]", ''),selected_surface,thickness.text,selected_classification,_myActivitiesResult)));
+                          push(context, MaterialPageRoute(builder: (context)=>designTopology(market,client,event,other,sizes.toString().replaceAll("[", '').replaceAll("]", ''),selected_surface,thickness.text,selected_classification,_myActivitiesResult.replaceAll("[", '').replaceAll("]", ''))));
                         }
                       },
                     ),

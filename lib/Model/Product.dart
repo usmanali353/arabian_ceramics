@@ -1,5 +1,5 @@
 class Product{
-  String modelName,modelCode,surface,thickness,size,range,material,colour,technology,structure,edge,classification,suitibility, image,market,client,event,other,status,requestDate,designers,designersObservations,technical_consideration,closeing_date,commercial_decision;
+  String modelName,modelCode,surface,thickness,size,range,material,colour,technology,structure,edge,classification,suitibility, image,market,client,event,other,status,requestDate,designers,designersObservations,technical_consideration,closeing_date,commercial_decision,customerObservtion;
 
   Product({
       this.surface,
@@ -52,7 +52,7 @@ class Product{
     map['designer_observations']=designersObservations;
     map['technical_consideration']=technical_consideration;
     map['closeing_date']=closeing_date;
-
+    map['customer_observation']=customerObservtion;
     return map;
   }
   Product.fromMap(Map<dynamic,dynamic> data){
@@ -79,6 +79,7 @@ class Product{
     designers=data['designers'];
     designersObservations=data['designer_observations'];
     technical_consideration=data['technical_consideration'];
+    customerObservtion=data['customer_observation'];
     closeing_date= data['closeing_date'];
   }
 }

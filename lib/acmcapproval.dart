@@ -34,7 +34,7 @@ class _acmcApprovalState extends State<acmcApproval> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Allot Designer"),
+        title: Text("Designers Involved"),
       ),
       body: ListView(
         children: <Widget>[

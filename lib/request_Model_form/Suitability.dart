@@ -225,7 +225,7 @@ class _Suitability_State extends ResumableState<Suitability> {
                                     uploadTask.onComplete.then((value){
                                       storageReference.getDownloadURL().then((downloadUrl){
                                         if(downloadUrl!=null){
-                                          Firestore.instance.collection("model_requests").document().setData(Product(surface: surface,edge: edge,classification: classification,structure: structure,market: market,client: client,event: event,technology: technology,other: other,suitibility:  _myActivitiesResult,material: material,image: downloadUrl,colour: color,range: range,size: size,thickness: thickness,status:"New Request",requestDate:DateFormat("yyyy-MM-dd").format(DateTime.now()),technical_consideration: technical_consideration.text).toJson()).then((response){
+                                          Firestore.instance.collection("model_requests").document().setData(Product(surface: surface,edge: edge,classification: classification,structure: structure,market: market,client: client,event: event,technology: technology,other: other,suitibility:  _myActivitiesResult.replaceAll("[", '').replaceAll("]", ''),material: material,image: downloadUrl,colour: color,range: range,size: size,thickness: thickness,status:"New Request",requestDate:DateFormat("yyyy-MM-dd").format(DateTime.now()),technical_consideration: technical_consideration.text).toJson()).then((response){
                                             pd.hide();
                                             Scaffold.of(context).showSnackBar(SnackBar(
                                               content: Text("Request for Model Added"),

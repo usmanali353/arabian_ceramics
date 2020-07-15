@@ -27,7 +27,7 @@ class _DetailPageState extends State<DetailPage>{
         appBar: AppBar(
           title: Text("Request Details"),
           actions: <Widget>[
-            product.status=='Produced'||product.status=='Approved by Customer'?InkWell(
+            product.status=='Produced'||product.status=='Approved by Customer'||product.status=='Approved for Trials'?InkWell(
                child: Padding(
                  padding: const EdgeInsets.all(8.0),
                  child: Center(child: Text("Generate QR Code")),
@@ -80,10 +80,24 @@ class _DetailPageState extends State<DetailPage>{
                             ),
                             Divider(),
                             ListTile(
+                              title: Text("Technical Considerations",style: TextStyle(fontWeight: FontWeight.bold),),
+                              subtitle: Text(product.technical_consideration),
+                            ),
+                            Divider(),
+                            ListTile(
                               title: Text("Request Status",style: TextStyle(fontWeight: FontWeight.bold),),
                               trailing: Text(product.status),
                             ),
                             Divider(),
+                            product.customerObservtion!=null?Column(
+                              children: <Widget>[
+                                ListTile(
+                                  title: Text("Customer Observation",style: TextStyle(fontWeight: FontWeight.bold),),
+                                  subtitle: Text(product.customerObservtion),
+                                ),
+                                Divider(),
+                              ],
+                            ):Container(),
                             ListTile(
                               title: Text("Closing Date",style: TextStyle(fontWeight: FontWeight.bold),),
                               trailing: Text(product.closeing_date!=null?product.closeing_date:''),
@@ -120,6 +134,24 @@ class _DetailPageState extends State<DetailPage>{
                            Padding(
                              padding: EdgeInsets.only(top: 4, bottom: 4),
                            ),
+                           product.modelName!=null?Column(
+                             children: <Widget>[
+                               ListTile(
+                                 title: Text("Model Name",style: TextStyle(fontWeight: FontWeight.bold),),
+                                 trailing: Text(product.modelName),
+                               ),
+                               Divider(),
+                             ],
+                           ):Container(),
+                            product.modelCode!=null?Column(
+                              children: <Widget>[
+                                ListTile(
+                                  title: Text("Model Code",style: TextStyle(fontWeight: FontWeight.bold),),
+                                  trailing: Text(product.modelCode),
+                                ),
+                                Divider(),
+                              ],
+                            ):Container(),
                            ListTile(
                               title: Text("Surface", style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -194,7 +226,7 @@ class _DetailPageState extends State<DetailPage>{
                               title: Text("Suitability", style: TextStyle(
                                   fontWeight: FontWeight.bold,
                               ),),
-                              trailing: Text(product.suitibility),
+                              subtitle: Text(product.suitibility.replaceAll("[", '').replaceAll("]", '')),
                             ),
                             Divider(),
                           ],

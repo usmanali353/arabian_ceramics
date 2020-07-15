@@ -37,6 +37,7 @@ class _ModelReState extends ResumableState<ModelRequests> {
   bool isCustomer=false;
   bool canScheduleProduction=false;
   bool canApproveAcmc=false;
+  bool canApproveforTrial=false;
   var selectedPreference,selectedStatus;
   String userId;
   _ModelReState(this.users);
@@ -65,7 +66,12 @@ class _ModelReState extends ResumableState<ModelRequests> {
       setState(() {
         canScheduleProduction=true;
       });
+    }else if(users.roles[0]['roleName'] =='Approve for trials'){
+      setState(() {
+        canApproveforTrial=true;
+      });
     }
+    print(users.roles[0]['roleName']);
     FirebaseAuth.instance.currentUser().then((val){
       if(val!=null){
         setState(() {
@@ -137,21 +143,12 @@ class _ModelReState extends ResumableState<ModelRequests> {
       appBar: AppBar(
           title:Text("Model Requests"),
         actions: <Widget>[
-          PopupMenuButton<String>(
-            onSelected: (choice){
-              if(choice=='Sort by Status'){
-                showStatusAlertDialog(context);
-              }
-            },
-            itemBuilder: (BuildContext context){
-              return ['Sort by Status'].map((String choice){
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
-          )
+         IconButton(
+           icon: Icon(Icons.search),
+           onPressed: (){
+             showStatusAlertDialog(context);
+           },
+         )
         ],
       ),
       body: RefreshIndicator(
@@ -254,6 +251,8 @@ class _ModelReState extends ResumableState<ModelRequests> {
                             showAlertChangeStatus(context, productId[index], products[index]);
                         }else if(isCustomer&&products[index].status=="Produced"){
                           showCustomerApprovalDialog(context, products[index], productId[index]);
+                        }else if(canApproveforTrial&&(products[index].status=="Approved by Customer"||products[index].status=='Rejected by Customer')){
+                          showTrialApprovalDialog(context,products[index],productId[index]);
                         }else{
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(products[index],productId[index])));
                         }
@@ -367,6 +366,116 @@ class _ModelReState extends ResumableState<ModelRequests> {
     );
     AlertDialog alert = AlertDialog(
       title: Text("Approve/Reject Model Request"),
+      content: StatefulBuilder(
+        builder: (context, setState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              RadioListTile(
+                title: Text("Approve"),
+                value: 'Approve',
+                groupValue: selectedPreference,
+                onChanged: (choice) {
+                  setState(() {
+                    this.selectedPreference = choice;
+                  });
+                },
+              ),
+              RadioListTile(
+                title: Text("Reject"),
+                value: 'Reject',
+                groupValue: selectedPreference,
+                onChanged: (choice) {
+                  setState(() {
+                    this.selectedPreference = choice;
+                  });
+                },
+              ),
+            ],
+          );
+        },
+      ),
+      actions: [
+        cancelButton,
+        detailsPage,
+        approveRejectButton
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+  showTrialApprovalDialog(BuildContext context,Product product,String productId){
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget detailsPage = FlatButton(
+      child: Text("Go to Details"),
+      onPressed: () {
+        Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(product,productId)));
+      },
+    );
+    Widget approveRejectButton = FlatButton(
+      child: Text("Set"),
+      onPressed: () {
+        Navigator.pop(context);
+        ProgressDialog pd=ProgressDialog(context);
+        pd.show();
+        if(selectedPreference=="Approve"){
+          Map<String,dynamic> map=Map();
+          map.putIfAbsent("status", () => "Approved for Trials");
+          Firestore.instance.collection("model_requests").document(productId).updateData(map).then((value){
+            pd.hide();
+            WidgetsBinding.instance
+                .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+            Flushbar(
+              message: "Status of Request Changed",
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 5),
+            )..show(context);
+          }).catchError((onError){
+            pd.hide();
+            Flushbar(
+              message: onError.toString(),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 5),
+            )..show(context);
+          });
+        }else if(selectedPreference=="Reject"){
+          Map<String,dynamic> map=Map();
+          map.putIfAbsent("status", () => "Rejected for Trials");
+          Firestore.instance.collection("model_requests").document(productId).updateData(map).then((value){
+            pd.hide();
+            WidgetsBinding.instance
+                .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+            Flushbar(
+              message: "Status of Request Changed",
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 5),
+            )..show(context);
+          }).catchError((onError){
+            pd.hide();
+            Flushbar(
+              message: onError.toString(),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 5),
+            )..show(context);
+          });
+        }
+
+      },
+    );
+    AlertDialog alert = AlertDialog(
+      title: Text("Approve/Reject Model for Trial"),
       content: StatefulBuilder(
         builder: (context, setState) {
           return Column(
@@ -553,5 +662,13 @@ class _ModelReState extends ResumableState<ModelRequests> {
         return alert;
       },
     );
+  }
+  @override
+  void dispose() {
+    FirebaseAuth.instance.signOut();
+    SharedPreferences.getInstance().then((prefs){
+      prefs.remove("user_id");
+    });
+    super.dispose();
   }
 }

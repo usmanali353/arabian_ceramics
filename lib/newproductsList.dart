@@ -29,7 +29,7 @@ class _newProductListState extends State<newProductList> {
         onRefresh: (){
           return Utils.check_connectivity().then((connected){
             if(connected){
-              Firestore.instance.collection("model_requests").where("modelName",isGreaterThan: '').getDocuments().then((querySnapshot){
+              Firestore.instance.collection("model_requests").where("modelName",isGreaterThan: '').where("status",isEqualTo: "Approved for Trials").getDocuments().then((querySnapshot){
                 if(querySnapshot.documents.length>0){
                   setState(() {
                     if(newProducts.length>0){
@@ -73,7 +73,7 @@ class _newProductListState extends State<newProductList> {
               child: ListView.builder(itemCount: newProducts.length,itemBuilder: (context,index){
                 return Column(
                   children: <Widget>[
-                    ExpansionTile(
+                    ListTile(
                       title: Text(newProducts[index].modelName),
                       subtitle: Text(newProducts[index].modelCode),
                       leading:  Material(
@@ -84,37 +84,6 @@ class _newProductListState extends State<newProductList> {
                           child: Icon(FontAwesomeIcons.box,size: 30,color: Color(0xFF004c4c),),
                         ),
                       ),
-                      children: <Widget>[
-                        ListTile(
-                          title: Text("Sizes"),
-                          subtitle: Text(newProducts[index].size.replaceAll('[', '').replaceAll(']', '')),
-                        ),
-                        Divider(),
-                        ListTile(
-                          title: Text("Colours"),
-                          subtitle: Text(newProducts[index].colour.replaceAll('[', '').replaceAll(']', '')),
-                        ),
-                        Divider(),
-                        ListTile(
-                          title: Text("Surface"),
-                          subtitle: Text(newProducts[index].surface),
-                        ),
-                        Divider(),
-                        ListTile(
-                          title: Text("Design Topology"),
-                          subtitle: Text(newProducts[index].material.replaceAll('[', '').replaceAll(']', '')),
-                        ),
-                        Divider(),
-                        ListTile(
-                          title: Text("Closing Date"),
-                          subtitle: Text(newProducts[index].closeing_date),
-                        ),
-                        Divider(),
-                        ListTile(
-                          title: Text("Status"),
-                          subtitle: Text(newProducts[index].status),
-                        ),
-                      ],
                     ),
                     Divider(),
                   ],

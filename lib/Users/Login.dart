@@ -140,6 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ));
                             });
                               }else{
+                                pd.hide();
     Scaffold.of(context).showSnackBar(SnackBar(
     content: Text("Network not Available"),
     backgroundColor: Colors.red,

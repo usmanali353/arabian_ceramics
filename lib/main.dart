@@ -2,6 +2,7 @@ import 'package:Arabian_Ceramics/Users/Login.dart';
 import 'package:Arabian_Ceramics/Utils.dart';
 import 'package:Arabian_Ceramics/acmcapproval.dart';
 import 'package:Arabian_Ceramics/newproductsList.dart';
+import 'package:Arabian_Ceramics/scanner.dart';
 import 'package:flutter/material.dart';
 
 
