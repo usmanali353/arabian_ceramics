@@ -12,7 +12,7 @@ class _AssumptionsState extends ResumableState<Assumptions> {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey();
   List<String> marketList=['Local General','Local Exclusive','Export'];
   List<String> clientList=['Client 1','Client 2','Client 3','Other'];
-  String selectedMarket,selectedClient="'Client 1";
+  String selectedMarket,selectedClient="Client 1";
   @override
   void onResume() {
    Navigator.pop(context,'Refresh');

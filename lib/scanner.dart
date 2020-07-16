@@ -1,12 +1,12 @@
 import 'package:Arabian_Ceramics/DetailPage.dart';
 import 'package:Arabian_Ceramics/Model/Product.dart';
+import 'package:barcode_scan/model/model.dart';
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 class QRScanner extends StatefulWidget{
   @override
@@ -18,7 +18,7 @@ class QRScanner extends StatefulWidget{
 }
 
 class _QRScanner_State extends State<QRScanner>{
-  String barcode;
+  ScanResult barcode;
   @override
   void initState() {
     super.initState();
@@ -39,7 +39,7 @@ class _QRScanner_State extends State<QRScanner>{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-
+             Text(barcode!=null?barcode.rawContent:'No Barcode Found')
           ],
         ),
       ),
@@ -77,15 +77,15 @@ class _QRScanner_State extends State<QRScanner>{
     );
   }
   Future scan() async {
+    ProgressDialog pd=ProgressDialog(context);
+
     try {
-      barcode = (await BarcodeScanner.scan()) as String;
-      print(barcode);
+      barcode = (await BarcodeScanner.scan());
+      print('Barcode '+barcode.rawContent);
       setState(() {
         this.barcode = barcode;
-
-        ProgressDialog pd=ProgressDialog(context);
         pd.show();
-        Firestore.instance.collection("model_requests").document(barcode).get().then((documentSnapshot){
+        Firestore.instance.collection("model_requests").document(barcode.rawContent).get().then((documentSnapshot){
           if(documentSnapshot.exists){
             pd.hide();
             Product p=Product.fromMap(documentSnapshot.data);
@@ -101,17 +101,39 @@ class _QRScanner_State extends State<QRScanner>{
         });
       });
     } on PlatformException catch (e) {
+      pd.hide();
       if (e.code == BarcodeScanner.cameraAccessDenied) {
-        setState(() {
-          this.barcode = 'The user did not grant the camera permission!';
-        });
+
+       Flushbar(
+         message: "Camera Access not Granted",
+         backgroundColor: Colors.red,
+         duration: Duration(seconds: 5),
+       ).show(context);
       } else {
-        setState(() => this.barcode = 'Unknown error: $e');
+        Flushbar(
+          message: e.toString(),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ).show(context);
+       // setState(() => this.barcode = 'Unknown error: $e');
       }
     } on FormatException{
-      setState(() => this.barcode = 'null (User returned using the "back"-button before scanning anything. Result)');
+      pd.hide();
+      Flushbar(
+        message: "User returned using the back-button before scanning anything",
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 5),
+      ).show(context);
+      //setState(() => this.barcode = 'null (User returned using the "back"-button before scanning anything. Result)');
     } catch (e) {
-      setState(() => this.barcode = 'Unknown error: $e');
+      pd.hide();
+      Flushbar(
+        message: e,
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 5),
+      ).show(context);
+     // setState(() => this.barcode = 'Unknown error: $e');
     }
+    return barcode;
   }
 }

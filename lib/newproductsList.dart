@@ -29,7 +29,7 @@ class _newProductListState extends State<newProductList> {
         onRefresh: (){
           return Utils.check_connectivity().then((connected){
             if(connected){
-              Firestore.instance.collection("model_requests").where("modelName",isGreaterThan: '').where("status",isEqualTo: "Approved for Trials").getDocuments().then((querySnapshot){
+              Firestore.instance.collection("model_requests").where("status",isEqualTo: "Approved for Trials").getDocuments().then((querySnapshot){
                 if(querySnapshot.documents.length>0){
                   setState(() {
                     if(newProducts.length>0){
