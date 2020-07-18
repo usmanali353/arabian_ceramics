@@ -32,7 +32,7 @@ class ModelRequests extends StatefulWidget {
 class _ModelReState extends ResumableState<ModelRequests> {
   GlobalKey<RefreshIndicatorState> refreshIndicatorKey=GlobalKey();
   List<Product> products=[];
-  List<String> productId=[],status=['All','New Request','Approved by ACMC','Rejected by ACMC','Scheduled','Approved by Customer','Rejected by Customer'];
+  List<String> productId=[],status=['All','New Request','Approved by ACMC','Rejected by ACMC','Scheduled for Samples Production','Samples Produced','Approved for Trial','Rejected for Trial','Scheduled for Trial','Approved by Customer','Rejected by Customer','Scheduled for Production'];
   Users users;
   bool isDataEntryOperator=false;
   bool isCustomer=false;
