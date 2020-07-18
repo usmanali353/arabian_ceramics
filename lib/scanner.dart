@@ -46,31 +46,6 @@ class _QRScanner_State extends State<QRScanner>{
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           scan();
-//          BarcodeScanner.scan().then((barcodeData){
-//            ProgressDialog pd=ProgressDialog(context);
-//            pd.show();
-//            print('scan results'+barcodeData.toString());
-//            Firestore.instance.collection("model_requests").document(barcodeData.toString()).get().then((documentSnapshot){
-//              pd.hide();
-//              if(documentSnapshot.exists){
-//                Product p=Product.fromMap(documentSnapshot.data);
-//                Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(p,documentSnapshot.documentID)));
-//              }
-//            }).catchError((onError){
-//              pd.hide();
-//              Flushbar(
-//                message: "No Product Info Found",
-//                backgroundColor: Colors.red,
-//                duration: Duration(seconds: 5),
-//              )..show(context);
-//            });
-//          }).catchError((onError){
-//            Flushbar(
-//              message: onError.toString(),
-//              backgroundColor: Colors.red,
-//              duration: Duration(seconds: 5),
-//            )..show(context);
-//          });
         },
         child: Icon(Icons.camera_enhance),
       ), // This trailing comma makes auto-formatting nicer for build methods.

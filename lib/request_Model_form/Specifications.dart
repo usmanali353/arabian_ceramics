@@ -292,8 +292,8 @@ class _SpecificationsState extends ResumableState<Specifications> {
                     child: FormBuilderTextField(
                       controller: thickness,
                       attribute: "Thickness",
-                      validators: [FormBuilderValidators.required()],
                       keyboardType: TextInputType.numberWithOptions(decimal: true),
+                      validators: [FormBuilderValidators.required()],
                       decoration: InputDecoration(hintText: "Thickness (cm)",
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.all(16),

@@ -98,11 +98,6 @@ class _DetailPageState extends State<DetailPage>{
                                 Divider(),
                               ],
                             ):Container(),
-                            ListTile(
-                              title: Text("Closing Date",style: TextStyle(fontWeight: FontWeight.bold),),
-                              trailing: Text(product.closeing_date!=null?product.closeing_date:''),
-                            ),
-                            Divider(),
                             product.designers!=null&&product.designersObservations!=null?Column(
                               children: <Widget>[
                                 ListTile(
@@ -113,6 +108,24 @@ class _DetailPageState extends State<DetailPage>{
                                 ListTile(
                                   title: Text("Designers Observations",style: TextStyle(fontWeight: FontWeight.bold),),
                                   subtitle: Text(product.designersObservations),
+                                ),
+                                Divider(),
+                              ],
+                            ):Container(),
+                            product.closeing_date!=null?Column(
+                              children: <Widget>[
+                                ListTile(
+                                  title: Text("Closing Date",style: TextStyle(fontWeight: FontWeight.bold),),
+                                  trailing: Text(product.closeing_date!=null?product.closeing_date:''),
+                                ),
+                                Divider(),
+                              ],
+                            ):Container(),
+                            product.trialDate!=null?Column(
+                              children: <Widget>[
+                                ListTile(
+                                  title: Text("Trial Date",style: TextStyle(fontWeight: FontWeight.bold),),
+                                  trailing: Text(product.trialDate!=null?product.trialDate:''),
                                 ),
                                 Divider(),
                               ],

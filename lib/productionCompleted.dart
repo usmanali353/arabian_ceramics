@@ -84,7 +84,7 @@ class _productionCompletedState extends State<productionCompleted> {
                       Map<String,dynamic> map=Map();
                       map.putIfAbsent("modelName", () => modelName.text);
                       map.putIfAbsent("modelCode", () => modelCode.text);
-                      map.putIfAbsent("status", () => "Produced");
+                      map.putIfAbsent("status", () => "Samples Produced");
                       ProgressDialog pd=ProgressDialog(context);
                       pd.show();
                       Firestore.instance.collection("model_requests").document(productId).updateData(map).then((updateStatus){

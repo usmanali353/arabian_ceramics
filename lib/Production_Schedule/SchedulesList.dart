@@ -76,8 +76,7 @@ class _SchedulesListState extends State<SchedulesList> {
                 return Column(
                   children: <Widget>[
                     ListTile(
-                      title: Text("Requested Date: "+schedules[index].scheduledByName),
-                      subtitle: Text('Production Date: '+schedules[index].scheduledOn),
+                      title: Text('Production Date: '+schedules[index].scheduledOn),
                       leading:  Material(
                           borderRadius: BorderRadius.circular(24),
                           color: Colors.teal.shade100,

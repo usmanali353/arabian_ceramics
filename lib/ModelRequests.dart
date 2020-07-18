@@ -34,6 +34,7 @@ class _ModelReState extends ResumableState<ModelRequests> {
   List<Product> products=[];
   List<String> productId=[],status=['All','New Request','Approved by ACMC','Rejected by ACMC','Scheduled','Approved by Customer','Rejected by Customer'];
   Users users;
+  bool isDataEntryOperator=false;
   bool isCustomer=false;
   bool canScheduleProduction=false;
   bool canApproveAcmc=false;
@@ -56,7 +57,7 @@ class _ModelReState extends ResumableState<ModelRequests> {
         .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
     if(users.roles[0]['roleName'] =='Make Model Requests'){
      setState(() {
-       isCustomer=true;
+       isDataEntryOperator=true;
      });
     }else if(users.roles[0]['roleName'] =='Approve Requests'){
       setState(() {
@@ -69,6 +70,10 @@ class _ModelReState extends ResumableState<ModelRequests> {
     }else if(users.roles[0]['roleName'] =='Approve for trials'){
       setState(() {
         canApproveforTrial=true;
+      });
+    }else if(users.roles[0]['roleName'] =='Approve on behalf of Customer'){
+      setState(() {
+        isCustomer=true;
       });
     }
     print(users.roles[0]['roleName']);
@@ -100,14 +105,6 @@ class _ModelReState extends ResumableState<ModelRequests> {
                children: <Widget>[
                  isCustomer?Column(
                    children: <Widget>[
-                     ListTile(
-                       title: Text("Products for Trial"),
-                       leading: FaIcon(FontAwesomeIcons.box),
-                       onTap: (){
-                         Navigator.push(context, MaterialPageRoute(builder: (context)=>newProductList()));
-                       },
-                     ),
-                     Divider(),
                      ListTile(
                        title: Text("Sign Out"),
                        leading: FaIcon(FontAwesomeIcons.signOutAlt),
@@ -199,44 +196,22 @@ class _ModelReState extends ResumableState<ModelRequests> {
                         if(canApproveAcmc&&products[index].status=="New Request"){
                           showAlertDialog(context,products[index],productId[index]);
                         }else if(canScheduleProduction&&products[index].status=="Approved by ACMC"){
-                          showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 60))).then((selectedDate){
+                          showDatePicker(helpText:"Select Date for Sample Production",context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 60))).then((selectedDate){
                             if(selectedDate!=null){
                               Map<String,dynamic> map=Map();
-                              map.putIfAbsent("status", () => "Scheduled for Production");
+                              map.putIfAbsent("status", () => "Scheduled for Samples Production");
+                              map.putIfAbsent("closeing_date", () => DateFormat("yyyy-MM-dd").format(selectedDate));
                               ProgressDialog pd=ProgressDialog(context);
                               pd.show();
                               Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((value) {
-                                Firestore.instance.collection("Schedules").document().setData(Schedule(
-                                    scheduledById: userId,
-                                    scheduledOn:DateFormat("yyyy-MM-dd").format(selectedDate),
-                                    requestedDate: products[index].requestDate,
-                                    scheduledByName: users.name,
-                                    surface: products[index].surface,
-                                    thickness: products[index].thickness,
-                                    size:products[index].size,
-                                    range: products[index].range,
-                                    material:products[index].material,
-                                    colour: products[index].colour,
-                                    technology: products[index].technology,
-                                    structure: products[index].structure,
-                                    edge: products[index].edge,
-                                    classification: products[index].classification).toJson()).then((value){
-                                      pd.hide();
-                                  Flushbar(
-                                    message: "request Scheduled",
-                                    backgroundColor: Colors.green,
-                                    duration: Duration(seconds: 5),
-                                  )..show(context);
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
-                                }).catchError((onError){
-                                  pd.hide();
-                                  Flushbar(
-                                    message: onError.toString(),
-                                    backgroundColor: Colors.green,
-                                    duration: Duration(seconds: 5),
-                                  )..show(context);
-                                });
+                                pd.hide();
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+                               Flushbar(
+                                 message: "Request Scheduled",
+                                 backgroundColor: Colors.green,
+                                 duration: Duration(seconds: 5),
+                               )..show(context);
                               }).catchError((onError){
                                 pd.hide();
                                 Flushbar(
@@ -247,12 +222,67 @@ class _ModelReState extends ResumableState<ModelRequests> {
                               });
                             }
                           });
-                        }else if(canScheduleProduction&&products[index].status=="Scheduled for Production"){
+                        }else if(canScheduleProduction&&products[index].status=="Scheduled for Samples Production"){
                             showAlertChangeStatus(context, productId[index], products[index]);
-                        }else if(isCustomer&&products[index].status=="Produced"){
-                          showCustomerApprovalDialog(context, products[index], productId[index]);
-                        }else if(canApproveforTrial&&(products[index].status=="Approved by Customer"||products[index].status=='Rejected by Customer')){
+                        }else if(canApproveforTrial&&products[index].status=="Samples Produced"){
+                         // showCustomerApprovalDialog(context, products[index], productId[index]);
                           showTrialApprovalDialog(context,products[index],productId[index]);
+                        }else if(canApproveforTrial&&(products[index].status=="Approved for Trial")){
+              showDatePicker(helpText:"Select Date for Produced Sample Trial",context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 60))).then((selectedDate){
+                if(selectedDate!=null){
+                  Map<String,dynamic> map=Map();
+                  map.putIfAbsent("trial_date", () => DateFormat("yyyy-MM-dd").format(selectedDate));
+                  map.putIfAbsent("status", () =>"Scheduled for Trial");
+                  ProgressDialog pd=ProgressDialog(context);
+                  pd.show();
+                  Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((updatedTrialDate){
+                    pd.hide();
+                    WidgetsBinding.instance
+                        .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+                    Flushbar(
+                      message: "Trial Scheduled",
+                      backgroundColor: Colors.green,
+                      duration: Duration(seconds: 5),
+                    )..show(context);
+                  }).catchError((onError){
+                    pd.hide();
+                    Flushbar(
+                      message: onError.toString(),
+                      backgroundColor: Colors.red,
+                      duration: Duration(seconds: 5),
+                    )..show(context);
+                  });
+                }
+              });
+                        }else if(isCustomer&&products[index].status=='Scheduled for Trial'){
+                          showCustomerApprovalDialog(context, products[index], productId[index]);
+                        }else if(canScheduleProduction&&products[index].status=='Approved by Customer'){
+                          showDatePicker(helpText:"Select Date for Production for Customer",context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 120))).then((selectedDate){
+                            if(selectedDate!=null){
+                              Map<String,dynamic> map=Map();
+                              map.putIfAbsent("production_date", () => DateFormat("yyyy-MM-dd").format(selectedDate));
+                              map.putIfAbsent("status", () =>"Scheduled for Production");
+                              ProgressDialog pd=ProgressDialog(context);
+                              pd.show();
+                              Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((updatedTrialDate){
+                                pd.hide();
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+                                Flushbar(
+                                  message: "Production for Customer Scheduled",
+                                  backgroundColor: Colors.green,
+                                  duration: Duration(seconds: 5),
+                                )..show(context);
+                              }).catchError((onError){
+                                pd.hide();
+                                Flushbar(
+                                  message: onError.toString(),
+                                  backgroundColor: Colors.red,
+                                  duration: Duration(seconds: 5),
+                                )..show(context);
+                              });
+                            }
+                          });
                         }else{
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(products[index],productId[index])));
                         }
@@ -432,13 +462,13 @@ class _ModelReState extends ResumableState<ModelRequests> {
         pd.show();
         if(selectedPreference=="Approve"){
           Map<String,dynamic> map=Map();
-          map.putIfAbsent("status", () => "Approved for Trials");
+          map.putIfAbsent("status", () => "Approved for Trial");
           Firestore.instance.collection("model_requests").document(productId).updateData(map).then((value){
             pd.hide();
             WidgetsBinding.instance
                 .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
             Flushbar(
-              message: "Status of Request Changed",
+              message: "Request Approved for Trial",
               backgroundColor: Colors.green,
               duration: Duration(seconds: 5),
             )..show(context);
@@ -452,7 +482,7 @@ class _ModelReState extends ResumableState<ModelRequests> {
           });
         }else if(selectedPreference=="Reject"){
           Map<String,dynamic> map=Map();
-          map.putIfAbsent("status", () => "Rejected for Trials");
+          map.putIfAbsent("status", () => "Rejected for Trial");
           Firestore.instance.collection("model_requests").document(productId).updateData(map).then((value){
             pd.hide();
             WidgetsBinding.instance
@@ -475,7 +505,7 @@ class _ModelReState extends ResumableState<ModelRequests> {
       },
     );
     AlertDialog alert = AlertDialog(
-      title: Text("Approve/Reject Model for Trial"),
+      title: Text("Approve/Reject Model for Trials"),
       content: StatefulBuilder(
         builder: (context, setState) {
           return Column(
@@ -561,7 +591,7 @@ class _ModelReState extends ResumableState<ModelRequests> {
 
   }
   Widget buildFloatingactionButtons(){
-    if(isCustomer){
+    if(isDataEntryOperator){
       return FloatingActionButton(
           child: Icon(Icons.add),
     onPressed: (){

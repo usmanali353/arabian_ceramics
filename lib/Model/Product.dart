@@ -1,5 +1,5 @@
 class Product{
-  String modelName,modelCode,surface,thickness,size,range,material,colour,technology,structure,edge,classification,suitibility, image,market,client,event,other,status,requestDate,designers,designersObservations,technical_consideration,closeing_date,commercial_decision,customerObservtion;
+  String modelName,modelCode,surface,thickness,size,range,material,colour,technology,structure,edge,classification,suitibility, image,market,client,event,other,status,requestDate,designers,designersObservations,technical_consideration,closeing_date,commercial_decision,customerObservtion,trialDate;
 
   Product({
       this.surface,
@@ -25,6 +25,7 @@ class Product{
      this.designers,
      this.designersObservations,
      this.technical_consideration,
+     this.trialDate,
   });
   Map<String, dynamic> toJson() {
     var map = new Map<String, dynamic>();
@@ -53,6 +54,7 @@ class Product{
     map['technical_consideration']=technical_consideration;
     map['closeing_date']=closeing_date;
     map['customer_observation']=customerObservtion;
+    map['trial_date']=trialDate;
     return map;
   }
   Product.fromMap(Map<dynamic,dynamic> data){
@@ -81,5 +83,6 @@ class Product{
     technical_consideration=data['technical_consideration'];
     customerObservtion=data['customer_observation'];
     closeing_date= data['closeing_date'];
+    trialDate=data['trial_date'];
   }
 }

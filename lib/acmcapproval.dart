@@ -20,7 +20,6 @@ class _acmcApprovalState extends State<acmcApproval> {
   List myDesigners;
   TextEditingController designerObservations,modelName,modelCode;
   String status,productId,approvedBy,approveById;
-  DateTime closingDate=DateTime.now();
   _acmcApprovalState(this.status, this.productId,this.approvedBy,this.approveById);
 
   @override
@@ -101,34 +100,6 @@ class _acmcApprovalState extends State<acmcApproval> {
                     ),
                   ),
                 ),
-                Visibility(
-                  visible: status=="Approve",
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 16,right: 16,bottom: 16),
-                    child: Card(
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: FormBuilderDateTimePicker(
-                        attribute: "Target Date",
-                        format: DateFormat("yyyy-MM-dd"),
-                        validators: [FormBuilderValidators.required()],
-                        inputType: InputType.date,
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(16),
-                            border: InputBorder.none,
-                            hintText: "Target/Closing Date"
-                        ),
-                        onChanged: (date){
-                          setState(() {
-                            this.closingDate=date;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ),
                 MaterialButton(
                   color: Color(0xFF004c4c),
                   child: Text("Proceed",style: TextStyle(color: Colors.white),),
@@ -169,7 +140,6 @@ class _acmcApprovalState extends State<acmcApproval> {
                         map.putIfAbsent("acmcapprovalbywhomId", () => approveById);
                         map.putIfAbsent("acmcapprovalbywhomName", () => approvedBy);
                         map.putIfAbsent("acmcapprovaldate", () => DateFormat("yyyy-MM-dd").format(DateTime.now()));
-                        map.putIfAbsent("closeing_date", () => DateFormat("yyyy-MM-dd").format(closingDate));
                         map.putIfAbsent("designers", () => myDesigners.toString().replaceAll("[]]",''));
                         map.putIfAbsent("designer_observations", () => designerObservations.text);
 
