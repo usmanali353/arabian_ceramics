@@ -53,6 +53,7 @@ class _ModelReState extends ResumableState<ModelRequests> {
   }
   @override
   void initState() {
+
     print(users.name);
     WidgetsBinding.instance
         .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
