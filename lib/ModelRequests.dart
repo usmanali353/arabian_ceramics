@@ -15,6 +15,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:need_resume/need_resume.dart';
@@ -188,106 +189,157 @@ class _ModelReState extends ResumableState<ModelRequests> {
             child: ListView.builder(itemCount:products!=null?products.length:0,itemBuilder: (BuildContext context,int index){
               return Column(
                 children: <Widget>[
-                  ListTile(
-                    leading: Image.network(products[index].image),
-                    subtitle: Text(products[index].status),
-                    title: Text(products[index].requestDate),
-                    onTap: (){
-                        if(canApproveAcmc&&products[index].status=="New Request"){
-                          showAlertDialog(context,products[index],productId[index]);
-                        }else if(canScheduleProduction&&products[index].status=="Approved by ACMC"){
-                          showDatePicker(helpText:"Select Date for Sample Production",context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 60))).then((selectedDate){
-                            if(selectedDate!=null){
-                              Map<String,dynamic> map=Map();
-                              map.putIfAbsent("status", () => "Scheduled for Samples Production");
-                              map.putIfAbsent("closeing_date", () => DateFormat("yyyy-MM-dd").format(selectedDate));
-                              ProgressDialog pd=ProgressDialog(context);
-                              pd.show();
-                              Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((value) {
-                                pd.hide();
-                                WidgetsBinding.instance
-                                    .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
-                               Flushbar(
-                                 message: "Request Scheduled",
-                                 backgroundColor: Colors.green,
-                                 duration: Duration(seconds: 5),
-                               )..show(context);
-                              }).catchError((onError){
-                                pd.hide();
-                                Flushbar(
-                                  message: onError.toString(),
-                                  backgroundColor: Colors.red,
-                                  duration: Duration(seconds: 5),
-                                )..show(context);
-                              });
-                            }
-                          });
-                        }else if(canScheduleProduction&&products[index].status=="Scheduled for Samples Production"){
+                  Slidable(
+                    actionPane: SlidableDrawerActionPane(),
+                    actions: <Widget>[
+                      IconSlideAction(
+                        icon: Icons.track_changes,
+                        color: Colors.green,
+                        caption: "Change Status",
+                        onTap: (){
+                          if(canApproveAcmc&&products[index].status=="New Request"){
+                            showAlertDialog(context,products[index],productId[index]);
+                          }else if(canScheduleProduction&&products[index].status=="Approved by ACMC"){
+                            showDatePicker(helpText:"Select Date for Sample Production",context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 60))).then((selectedDate){
+                              if(selectedDate!=null){
+                                Map<String,dynamic> map=Map();
+                                map.putIfAbsent("status", () => "Scheduled for Samples Production");
+                                map.putIfAbsent("closeing_date", () => DateFormat("yyyy-MM-dd").format(selectedDate));
+                                ProgressDialog pd=ProgressDialog(context);
+                                pd.show();
+                                Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((value) {
+                                  pd.hide();
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+                                  Flushbar(
+                                    message: "Request Scheduled",
+                                    backgroundColor: Colors.green,
+                                    duration: Duration(seconds: 5),
+                                  )..show(context);
+                                }).catchError((onError){
+                                  pd.hide();
+                                  Flushbar(
+                                    message: onError.toString(),
+                                    backgroundColor: Colors.red,
+                                    duration: Duration(seconds: 5),
+                                  )..show(context);
+                                });
+                              }
+                            });
+                          }else if(canScheduleProduction&&products[index].status=="Scheduled for Samples Production"){
                             showAlertChangeStatus(context, productId[index], products[index]);
-                        }else if(canApproveforTrial&&products[index].status=="Samples Produced"){
-                         // showCustomerApprovalDialog(context, products[index], productId[index]);
-                          showTrialApprovalDialog(context,products[index],productId[index]);
-                        }else if(canApproveforTrial&&(products[index].status=="Approved for Trial")){
-              showDatePicker(helpText:"Select Date for Produced Sample Trial",context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 60))).then((selectedDate){
-                if(selectedDate!=null){
-                  Map<String,dynamic> map=Map();
-                  map.putIfAbsent("trial_date", () => DateFormat("yyyy-MM-dd").format(selectedDate));
-                  map.putIfAbsent("status", () =>"Scheduled for Trial");
-                  ProgressDialog pd=ProgressDialog(context);
-                  pd.show();
-                  Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((updatedTrialDate){
-                    pd.hide();
-                    WidgetsBinding.instance
-                        .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
-                    Flushbar(
-                      message: "Trial Scheduled",
-                      backgroundColor: Colors.green,
-                      duration: Duration(seconds: 5),
-                    )..show(context);
-                  }).catchError((onError){
-                    pd.hide();
-                    Flushbar(
-                      message: onError.toString(),
-                      backgroundColor: Colors.red,
-                      duration: Duration(seconds: 5),
-                    )..show(context);
-                  });
-                }
-              });
-                        }else if(isCustomer&&products[index].status=='Scheduled for Trial'){
-                          showCustomerApprovalDialog(context, products[index], productId[index]);
-                        }else if(canScheduleProduction&&products[index].status=='Approved by Customer'){
-                          showDatePicker(helpText:"Select Date for Production for Customer",context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 120))).then((selectedDate){
-                            if(selectedDate!=null){
-                              Map<String,dynamic> map=Map();
-                              map.putIfAbsent("production_date", () => DateFormat("yyyy-MM-dd").format(selectedDate));
-                              map.putIfAbsent("status", () =>"Scheduled for Production");
-                              ProgressDialog pd=ProgressDialog(context);
-                              pd.show();
-                              Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((updatedTrialDate){
-                                pd.hide();
-                                WidgetsBinding.instance
-                                    .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
-                                Flushbar(
-                                  message: "Production for Customer Scheduled",
-                                  backgroundColor: Colors.green,
-                                  duration: Duration(seconds: 5),
-                                )..show(context);
-                              }).catchError((onError){
-                                pd.hide();
-                                Flushbar(
-                                  message: onError.toString(),
-                                  backgroundColor: Colors.red,
-                                  duration: Duration(seconds: 5),
-                                )..show(context);
-                              });
-                            }
-                          });
-                        }else{
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(products[index],productId[index])));
-                        }
+                          }else if(canApproveforTrial&&products[index].status=="Samples Produced"){
+                            // showCustomerApprovalDialog(context, products[index], productId[index]);
+                            showTrialApprovalDialog(context,products[index],productId[index]);
+                          }else if(canApproveforTrial&&(products[index].status=="Approved for Trial")){
+                            showDatePicker(helpText:"Select Date for Produced Sample Trial",context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 60))).then((selectedDate){
+                              if(selectedDate!=null){
+                                Map<String,dynamic> map=Map();
+                                map.putIfAbsent("trial_date", () => DateFormat("yyyy-MM-dd").format(selectedDate));
+                                map.putIfAbsent("status", () =>"Scheduled for Trial");
+                                ProgressDialog pd=ProgressDialog(context);
+                                pd.show();
+                                Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((updatedTrialDate){
+                                  pd.hide();
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+                                  Flushbar(
+                                    message: "Trial Scheduled",
+                                    backgroundColor: Colors.green,
+                                    duration: Duration(seconds: 5),
+                                  )..show(context);
+                                }).catchError((onError){
+                                  pd.hide();
+                                  Flushbar(
+                                    message: onError.toString(),
+                                    backgroundColor: Colors.red,
+                                    duration: Duration(seconds: 5),
+                                  )..show(context);
+                                });
+                              }
+                            });
+                          }else if(isCustomer&&products[index].status=='Scheduled for Trial'){
+                            showCustomerApprovalDialog(context, products[index], productId[index]);
+                          }else if(canScheduleProduction&&products[index].status=='Approved by Customer'){
+                            showDatePicker(helpText:"Select Date for Production for Customer",context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 120))).then((selectedDate){
+                              if(selectedDate!=null){
+                                Map<String,dynamic> map=Map();
+                                map.putIfAbsent("production_date", () => DateFormat("yyyy-MM-dd").format(selectedDate));
+                                map.putIfAbsent("status", () =>"Scheduled for Production");
+                                ProgressDialog pd=ProgressDialog(context);
+                                pd.show();
+                                Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((updatedTrialDate){
+                                  pd.hide();
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+                                  Flushbar(
+                                    message: "Production for Customer Scheduled",
+                                    backgroundColor: Colors.green,
+                                    duration: Duration(seconds: 5),
+                                  )..show(context);
+                                }).catchError((onError){
+                                  pd.hide();
+                                  Flushbar(
+                                    message: onError.toString(),
+                                    backgroundColor: Colors.red,
+                                    duration: Duration(seconds: 5),
+                                  )..show(context);
+                                });
+                              }
+                            });
+                          }else{
+                            Flushbar(
+                              message: 'You cant change Status',
+                              backgroundColor: Colors.red,
+                              duration: Duration(seconds: 5),
+                            )..show(context);
+                          }
 
-                    },
+                        },
+                      ),
+                    ],
+                    secondaryActions: <Widget>[
+                      IconSlideAction(
+                        icon: Icons.details,
+                        color: Colors.blue,
+                        caption: "Details",
+                        onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(products[index],productId[index])));
+                        },
+                      ),
+                    ],
+                    child: ExpansionTile(
+                      leading: Image.network(products[index].image),
+                      subtitle: Text(products[index].status),
+                      title: Text(products[index].requestDate),
+                      children: <Widget>[
+                        ListTile(
+                          title: Text("Model Name"),
+                          trailing: Text(products[index].modelName!=null?products[index].modelName:''),
+                        ),
+                        Divider(),
+                        ListTile(
+                          title: Text("Model Code"),
+                          trailing: Text(products[index].modelCode!=null?products[index].modelCode:''),
+                        ),
+                        Divider(),
+                        ListTile(
+                          title: Text("Surface"),
+                          trailing: Text(products[index].surface),
+                        ),
+                        Divider(),
+                        ListTile(
+                          title: Text("Size"),
+                          trailing: Text(products[index].size),
+                        ),
+                        Divider(),
+                        ListTile(
+                          title: Text("Commercial Observation"),
+                          subtitle: Text(products[index].customerObservtion!=null?products[index].customerObservtion:''),
+                        ),
+                        Divider(),
+                      ],
+                    ),
                   ),
                   Divider(),
                 ],
