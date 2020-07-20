@@ -1,3 +1,4 @@
+import 'package:Arabian_Ceramics/Dashboard.dart';
 import 'package:Arabian_Ceramics/Users/Login.dart';
 import 'package:Arabian_Ceramics/Utils.dart';
 import 'package:Arabian_Ceramics/acmcapproval.dart';
@@ -57,7 +58,7 @@ class _myAppState extends State<myApp> {
         primarySwatch: myColor,
         brightness: Brightness.light,
       ),
-      home: LoginScreen(),//loggedIn?ModelRequests():LoginScreen(),
+      home: Dashboard(),//loggedIn?ModelRequests():LoginScreen(),
     );
   }
 }
