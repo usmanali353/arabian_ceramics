@@ -298,14 +298,12 @@ class _ModelReState extends ResumableState<ModelRequests> {
 
                         },
                       ),
-                    ],
-                    secondaryActions: <Widget>[
                       IconSlideAction(
                         icon: Icons.details,
                         color: Colors.blue,
                         caption: "Details",
                         onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(products[index],productId[index])));
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(products[index],productId[index])));
                         },
                       ),
                     ],
@@ -313,6 +311,7 @@ class _ModelReState extends ResumableState<ModelRequests> {
                       leading: Image.network(products[index].image),
                       subtitle: Text(products[index].status),
                       title: Text(products[index].requestDate),
+                      initiallyExpanded: true,
                       children: <Widget>[
                         ListTile(
                           title: Text("Model Name"),

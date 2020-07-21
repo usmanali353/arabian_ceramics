@@ -1,11 +1,76 @@
+import 'package:Arabian_Ceramics/Model/Product.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flushbar/flushbar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import 'Utils.dart';
 class Dashboard extends StatefulWidget {
   @override
   _DashboardState createState() => _DashboardState();
 }
 
 class _DashboardState extends State<Dashboard> {
+  List<Product> products=[];
+  List<String> productId=[];
+  List<Product> newRequests=[],acmcApproved=[],sampleProductionScheduled=[],sampleProduced=[],approvedForTrial=[];
+ // status=['All','New Request','Approved by ACMC','Rejected by ACMC','Scheduled for Samples Production','Samples Produced','Approved for Trial','Rejected for Trial','Scheduled for Trial','Approved by Customer','Rejected by Customer','Scheduled for Production']
+  @override
+  void initState() {
+    Utils.check_connectivity().then((connected){
+      if(connected){
+        Firestore.instance.collection("model_requests").getDocuments().then((querySnapshot){
+          if(querySnapshot.documents.length>0){
+            if(products.length>0){
+              products.clear();
+            }
+            if(productId.length>0){
+              productId.clear();
+            }
+            setState(() {
+              products.addAll(querySnapshot.documents.map((e) => Product.fromMap(e.data)).toList());
+              for(int i=0;i<querySnapshot.documents.length;i++){
+                if(products.length>0&&products[i].status=='New Request'){
+                  newRequests.add(products[i]);
+                }
+              }
+              for(int i=0;i<querySnapshot.documents.length;i++){
+                if(products.length>0&&products[i].status=='Approved by ACMC'){
+                  acmcApproved.add(products[i]);
+                }
+              }
+              for(int i=0;i<querySnapshot.documents.length;i++){
+                if(products.length>0&&products[i].status=='Scheduled for Samples Production'){
+                  sampleProductionScheduled.add(products[i]);
+                }
+              }
+              for(int i=0;i<querySnapshot.documents.length;i++){
+                if(products.length>0&&products[i].status=='Samples Produced'){
+                  sampleProduced.add(products[i]);
+                }
+              }
+              for(int i=0;i<querySnapshot.documents.length;i++){
+                if(products.length>0&&products[i].status=='Approved for Trial'){
+                  approvedForTrial.add(products[i]);
+                }
+              }
+//              for(int i=0;i<querySnapshot.documents.length;i++){
+//                productId.add(querySnapshot.documents[i].documentID);
+//              }
+            });
+          }
+        }).catchError((onError){
+          Flushbar(
+            message: onError.toString(),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 5),
+          )..show(context);
+        });
+      }
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +136,7 @@ class _DashboardState extends State<Dashboard> {
                           child: Center(
                             child: Container(
                               //margin: EdgeInsets.only(left: 10,top: 5),
-                              child: Text('6543', style: TextStyle(color:Color(0xFF004c4c),
+                              child: Text(newRequests!=null?newRequests.length.toString():'', style: TextStyle(color:Color(0xFF004c4c),
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold
                               ),
@@ -126,7 +191,7 @@ class _DashboardState extends State<Dashboard> {
                           child: Center(
                             child: Container(
                               //margin: EdgeInsets.only(left: 10,top: 5),
-                              child: Text('',
+                              child: Text(acmcApproved!=null?acmcApproved.length.toString():'',
                                 style: TextStyle(
                                     color:Colors.teal.shade800,
                                     //Color(0xFF004c4c),
@@ -191,9 +256,9 @@ class _DashboardState extends State<Dashboard> {
                           color: Color(0xFF004c4c),
                         ),
                         child: Container(margin: EdgeInsets.only(left: 10,top: 5),
-                          child: Text('',
+                          child: Text(sampleProductionScheduled!=null?sampleProductionScheduled.length.toString():'',
                             style: TextStyle(
-                                color:Colors.teal.shade800,
+                                color:Colors.white,
                                 //Color(0xFF004c4c),
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold
@@ -253,7 +318,7 @@ class _DashboardState extends State<Dashboard> {
                           child: Center(
                             child: Container(
                               //margin: EdgeInsets.only(left: 10,top: 5),
-                              child: Text('6543', style: TextStyle(color:Color(0xFF004c4c),
+                              child: Text(sampleProduced!=null?sampleProduced.length.toString():'', style: TextStyle(color:Color(0xFF004c4c),
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold
                               ),
@@ -298,7 +363,6 @@ class _DashboardState extends State<Dashboard> {
                         Container(
                           //padding: EdgeInsets.all(3),
                           margin: EdgeInsets.only(left: 5, right: 5),
-
                           height: 30,
                           width: 145,
                           decoration: BoxDecoration(
@@ -308,7 +372,7 @@ class _DashboardState extends State<Dashboard> {
                           child: Center(
                             child: Container(
                               //margin: EdgeInsets.only(left: 10,top: 5),
-                              child: Text('',
+                              child: Text(approvedForTrial!=null?approvedForTrial.length.toString():'',
                                 style: TextStyle(
                                     color:Colors.teal.shade800,
                                     //Color(0xFF004c4c),
