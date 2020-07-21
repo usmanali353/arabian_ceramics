@@ -14,7 +14,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   List<Product> products=[];
   List<String> productId=[];
-  List<Product> newRequests=[],acmcApproved=[],sampleProductionScheduled=[],sampleProduced=[],approvedForTrial=[];
+  List<Product> newRequests=[],acmcApproved=[],sampleProductionScheduled=[],sampleProduced=[],approvedForTrial=[],customerApproved=[],scheduledProduction=[];
  // status=['All','New Request','Approved by ACMC','Rejected by ACMC','Scheduled for Samples Production','Samples Produced','Approved for Trial','Rejected for Trial','Scheduled for Trial','Approved by Customer','Rejected by Customer','Scheduled for Production']
   @override
   void initState() {
@@ -53,6 +53,16 @@ class _DashboardState extends State<Dashboard> {
               for(int i=0;i<querySnapshot.documents.length;i++){
                 if(products.length>0&&products[i].status=='Approved for Trial'){
                   approvedForTrial.add(products[i]);
+                }
+              }
+              for(int i=0;i<querySnapshot.documents.length;i++){
+                if(products.length>0&&products[i].status=='Approved by Customer'){
+                  customerApproved.add(products[i]);
+                }
+              }
+              for(int i=0;i<querySnapshot.documents.length;i++){
+                if(products.length>0&&products[i].status=='Scheduled for Production'){
+                  scheduledProduction.add(products[i]);
                 }
               }
 //              for(int i=0;i<querySnapshot.documents.length;i++){
@@ -390,8 +400,131 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
               ),
-
             ],
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 8.0),
+          ),
+          InkWell(
+            onTap: (){
+              // Navigator.push(context, MaterialPageRoute(builder: (context)=>RequestList(null,null,customerId)));
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0,right:8.0),
+              child: Card(
+                elevation: 10,
+                child: Container(
+                  // margin: EdgeInsets.only(left: 12.5,right: 12.5),
+                  height: 130,
+                  width: 20,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(left: 12),
+                        child: Text("Approved by Customer",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ),
+                      Container(
+                        //margin: EdgeInsets.only(left: 10, top: 5,bottom: 5),
+                        height: 30,
+                        width: MediaQuery.of(context).size.width *0.35,
+                        //width: 145,
+                        decoration: BoxDecoration(
+
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(15),
+                              bottomLeft: Radius.circular(15)
+                          ),
+                          color: Color(0xFF004c4c),
+                        ),
+                        child: Container(margin: EdgeInsets.only(left: 10,top: 5),
+                          child: Text(customerApproved!=null?customerApproved.length.toString():'',
+                            style: TextStyle(
+                                color:Colors.white,
+                                //Color(0xFF004c4c),
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold
+                            ),
+
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 8.0),
+          ),
+          InkWell(
+            onTap: (){
+              // Navigator.push(context, MaterialPageRoute(builder: (context)=>RequestList(null,null,customerId)));
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0,right:8.0),
+              child: Card(
+                elevation: 10,
+                child: Container(
+                  // margin: EdgeInsets.only(left: 12.5,right: 12.5),
+                  height: 130,
+                  width: 20,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(left: 12),
+                        child: Text("Scheduled for Production",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ),
+                      Container(
+                        //margin: EdgeInsets.only(left: 10, top: 5,bottom: 5),
+                        height: 30,
+                        width: MediaQuery.of(context).size.width *0.35,
+                        //width: 145,
+                        decoration: BoxDecoration(
+
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(15),
+                              bottomLeft: Radius.circular(15)
+                          ),
+                          color: Color(0xFF004c4c),
+                        ),
+                        child: Container(margin: EdgeInsets.only(left: 10,top: 5),
+                          child: Text(scheduledProduction!=null?scheduledProduction.length.toString():'',
+                            style: TextStyle(
+                                color:Colors.white,
+                                //Color(0xFF004c4c),
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold
+                            ),
+
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                ),
+              ),
+            ),
           ),
         ],
       ),
