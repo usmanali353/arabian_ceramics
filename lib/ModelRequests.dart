@@ -23,11 +23,13 @@ import 'request_Model_form/Assumptions.dart';
 
 class ModelRequests extends StatefulWidget {
   Users user;
+  List<Product> products;
+  List<String> productId;
 
-  ModelRequests(this.user);
+  ModelRequests(this.user, this.products, this.productId);
 
   @override
-  _ModelReState createState() => _ModelReState(user);
+  _ModelReState createState() => _ModelReState(user,products,productId);
 }
 
 class _ModelReState extends ResumableState<ModelRequests>{
@@ -42,7 +44,7 @@ class _ModelReState extends ResumableState<ModelRequests>{
   var selectedPreference,selectedStatus;
   Users users;
 
-  _ModelReState(this.users);
+  _ModelReState(this.users,this.products,this.productId);
 
   String userId;
   @override
@@ -55,8 +57,6 @@ class _ModelReState extends ResumableState<ModelRequests>{
   }
   @override
   void initState() {
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
     if(users.roles[0]['roleName'] =='Make Model Requests'){
       setState(() {
         isDataEntryOperator=true;
@@ -141,7 +141,7 @@ class _ModelReState extends ResumableState<ModelRequests>{
         ),
       ),
         appBar: AppBar(
-          title: Text("Model Request", style: TextStyle(
+          title: Text("Model Requests", style: TextStyle(
               color: Colors.white
           ),
           ),
@@ -162,36 +162,6 @@ class _ModelReState extends ResumableState<ModelRequests>{
             width: MediaQuery.of(context).size.width,
           ),
           Center(
-            child:RefreshIndicator(
-              key: refreshIndicatorKey,
-              onRefresh: (){
-                return  Utils.check_connectivity().then((connected){
-                  if(connected){
-                    Firestore.instance.collection("model_requests").getDocuments().then((querySnapshot){
-                      if(querySnapshot.documents.length>0){
-                        if(products.length>0){
-                          products.clear();
-                        }
-                        if(productId.length>0){
-                          productId.clear();
-                        }
-                        setState(() {
-                          products.addAll(querySnapshot.documents.map((e) => Product.fromMap(e.data)).toList());
-                          for(int i=0;i<querySnapshot.documents.length;i++){
-                            productId.add(querySnapshot.documents[i].documentID);
-                          }
-                        });
-                      }
-                    }).catchError((onError){
-                      Flushbar(
-                        message: onError.toString(),
-                        backgroundColor: Colors.red,
-                        duration: Duration(seconds: 5),
-                      )..show(context);
-                    });
-                  }
-                });
-              },
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                   itemCount:products.length, itemBuilder: (context,int index)
@@ -242,8 +212,7 @@ class _ModelReState extends ResumableState<ModelRequests>{
                           pd.show();
                           Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((updatedTrialDate){
                             pd.hide();
-                            WidgetsBinding.instance
-                                .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+                            Navigator.pop(context,'Refresh');
                             Flushbar(
                               message: "Trial Scheduled",
                               backgroundColor: Colors.green,
@@ -271,8 +240,7 @@ class _ModelReState extends ResumableState<ModelRequests>{
                           pd.show();
                           Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((updatedTrialDate){
                             pd.hide();
-                            WidgetsBinding.instance
-                                .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+                            Navigator.pop(context,'Refresh');
                             Flushbar(
                               message: "Production for Customer Scheduled",
                               backgroundColor: Colors.green,
@@ -297,12 +265,10 @@ class _ModelReState extends ResumableState<ModelRequests>{
                     height: MediaQuery.of(context).size.height,
                     width: MediaQuery.of(context).size.width * 1,
                     child: Card(
-
                       elevation: 10,
                       color: Colors.white,
                         child: Stack(
                           children: <Widget>[
-
                             Container(
                               //color: Color(0xFF004c4c),
                               height: MediaQuery.of(context).size.height * 0.25,
@@ -313,10 +279,7 @@ class _ModelReState extends ResumableState<ModelRequests>{
                                     fit: BoxFit.cover,
                                   )
                               ),
-
                             ),
-
-
                             Padding(
                               padding: const EdgeInsets.only(top: 150),
                               child: Center(
@@ -394,8 +357,6 @@ class _ModelReState extends ResumableState<ModelRequests>{
                 );
               }),
             )
-
-          )
 
         ],
       ),
