@@ -265,7 +265,6 @@ class _ModelReState extends ResumableState<ModelRequests>{
                     height: MediaQuery.of(context).size.height,
                     width: MediaQuery.of(context).size.width * 1,
                     child: Card(
-                      elevation: 10,
                       color: Colors.white,
                         child: Stack(
                           children: <Widget>[
@@ -284,11 +283,10 @@ class _ModelReState extends ResumableState<ModelRequests>{
                               padding: const EdgeInsets.only(top: 150),
                               child: Center(
                                 child: Container(
-                                  height: MediaQuery.of(context).size.height * 0.65,
+                                  height: MediaQuery.of(context).size.height,
                                   //width: ,
                                   child: Card(
                                     color: Colors.white,
-                                    elevation: 6.0,
                                     //margin: EdgeInsets.only(right: 15.0, left: 15.0),
                                     child: Scrollbar(
                                       child: ListView(
@@ -305,36 +303,42 @@ class _ModelReState extends ResumableState<ModelRequests>{
                                             ),),
                                             trailing: Text(products[index].modelName!=null?products[index].modelName:'---'),
                                           ),
+                                          Divider(),
                                           ListTile(
                                             title: Text("Model Code", style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                             ),),
                                             trailing: Text(products[index].modelCode!=null?products[index].modelCode:'---'),
                                           ),
+                                          Divider(),
                                           ListTile(
                                             title: Text("Date", style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                             ),),
                                             trailing: Text(products[index].requestDate),
                                           ),
+                                          Divider(),
                                           ListTile(
                                             title: Text("Surface", style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                             ),),
                                             trailing: Text(products[index].surface),
                                           ),
+                                          Divider(),
                                           ListTile(
                                             title: Text("Size", style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                             ),),
                                             trailing: Text(products[index].size),
                                           ),
+                                          Divider(),
                                           ListTile(
                                             title: Text("Status", style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                             ),),
                                             trailing: Text(products[index].status),
                                           ),
+                                          Divider(),
                                           ListTile(
                                             title: Text("Commercial Decision", style: TextStyle(
                                                 fontWeight: FontWeight.bold,

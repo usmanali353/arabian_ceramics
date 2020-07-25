@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:Arabian_Ceramics/Dashboard.dart';
 import 'package:Arabian_Ceramics/Model/Users.dart';
 import 'package:Arabian_Ceramics/ModelRequests.dart';
 import 'package:Arabian_Ceramics/Utils.dart';
@@ -129,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                              Firestore.instance.collection("Users").document(user.uid).get().then((documentSnapshot){
                                pd.hide();
                                if(documentSnapshot.exists){
-                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ModelRequests(Users.fromMap(documentSnapshot.data))));
+                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Dashboard(Users.fromMap(documentSnapshot.data))));
                                }
                              });
                             }).catchError((onError){
