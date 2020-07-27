@@ -68,10 +68,9 @@ class _ObservationsState extends State<Observations> {
                           map.putIfAbsent("customerRejectionDate", () => DateFormat("yyyy-MM-dd").format(DateTime.now()));
                         }
                         map.putIfAbsent("customer_observation", () => observation.text);
-
                         Firestore.instance.collection("model_requests").document(productId).updateData(map).then((updated){
                            pd.hide();
-                           Navigator.pop(context,"Refresh");
+                           Navigator.pop(context,"Close");
                            Flushbar(
                              message: 'Status of Request Changed',
                              duration: Duration(seconds: 5),

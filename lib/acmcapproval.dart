@@ -118,7 +118,7 @@ class _acmcApprovalState extends State<acmcApproval> {
                         map.putIfAbsent("designers_observations", () => designerObservations.text);
                         Firestore.instance.collection("model_requests").document(productId).updateData(map).then((value){
                           pd.hide();
-                          Navigator.pop(context,'Refresh');
+                          Navigator.pop(context,'Close');
                           Flushbar(
                             message: "Request Rejected",
                             backgroundColor: Colors.green,
@@ -145,7 +145,7 @@ class _acmcApprovalState extends State<acmcApproval> {
 
                         Firestore.instance.collection("model_requests").document(productId).updateData(map).then((value){
                           pd.hide();
-                          Navigator.pop(context,'Refresh');
+                          Navigator.pop(context,'Close');
                           Flushbar(
                             message: "Request Approved",
                             backgroundColor: Colors.green,

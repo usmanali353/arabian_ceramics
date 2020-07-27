@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 class productionCompleted extends StatefulWidget {
   String productId;
@@ -85,11 +86,12 @@ class _productionCompletedState extends State<productionCompleted> {
                       map.putIfAbsent("modelName", () => modelName.text);
                       map.putIfAbsent("modelCode", () => modelCode.text);
                       map.putIfAbsent("status", () => "Samples Produced");
+                      map.putIfAbsent("sample_production_date", () => DateFormat("yyyy-MM-dd").format(DateTime.now()));
                       ProgressDialog pd=ProgressDialog(context);
                       pd.show();
                       Firestore.instance.collection("model_requests").document(productId).updateData(map).then((updateStatus){
                         pd.hide();
-                        Navigator.pop(context,"Refresh");
+                        Navigator.pop(context,"Close");
                         Flushbar(
                           message: "Status for Request changed to Produced",
                           duration: Duration(seconds: 5),

@@ -4,22 +4,16 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:need_resume/need_resume.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'DetailPage.dart';
 import 'Model/Product.dart';
 import 'Model/Users.dart';
 import 'Observations.dart';
-import 'Production_Schedule/SchedulesList.dart';
-import 'Users/Login.dart';
-import 'Utils.dart';
 import 'acmcapproval.dart';
 import 'productionCompleted.dart';
-import 'request_Model_form/Assumptions.dart';
 
 class ModelRequests extends StatefulWidget {
   Users user;
@@ -49,10 +43,9 @@ class _ModelReState extends ResumableState<ModelRequests>{
   String userId;
   @override
   void onResume() {
-    if(resume.data.toString()=="Refresh"){
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
-    }
+    print(resume.data.toString());
+     Navigator.pop(context,'Refresh');
+     Navigator.pop(context,'Refresh');
     super.onResume();
   }
   @override
@@ -132,8 +125,7 @@ class _ModelReState extends ResumableState<ModelRequests>{
                           pd.show();
                           Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((value) {
                             pd.hide();
-                            WidgetsBinding.instance
-                                .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+                            Navigator.pop(context,'Refresh');
                             Flushbar(
                               message: "Request Scheduled",
                               backgroundColor: Colors.green,
@@ -412,8 +404,7 @@ class _ModelReState extends ResumableState<ModelRequests>{
           map.putIfAbsent("status", () => "Approved for Trial");
           Firestore.instance.collection("model_requests").document(productId).updateData(map).then((value){
             pd.hide();
-            WidgetsBinding.instance
-                .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+           Navigator.pop(context,'Refresh');
             Flushbar(
               message: "Request Approved for Trial",
               backgroundColor: Colors.green,
@@ -432,8 +423,7 @@ class _ModelReState extends ResumableState<ModelRequests>{
           map.putIfAbsent("status", () => "Rejected for Trial");
           Firestore.instance.collection("model_requests").document(productId).updateData(map).then((value){
             pd.hide();
-            WidgetsBinding.instance
-                .addPostFrameCallback((_) => refreshIndicatorKey.currentState.show());
+            Navigator.pop(context,'Refresh');
             Flushbar(
               message: "Status of Request Changed",
               backgroundColor: Colors.green,
@@ -612,22 +602,6 @@ class _ModelReState extends ResumableState<ModelRequests>{
       },
     );
   }
-  Widget buildFloatingactionButtons(){
-    if(isDataEntryOperator){
-      return FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: (){
-          push(context, MaterialPageRoute(builder: (context)=>Assumptions()));
-        },
-      );
-    }else if(canScheduleProduction)
-      return FloatingActionButton(
-        child: Icon(Icons.list),
-        onPressed: (){
-          push(context, MaterialPageRoute(builder: (context)=>SchedulesList()));
-        },
-      );
-  }
   showStatusAlertDialog(BuildContext context) {
     // set up the buttons
     Widget searchBtn = FlatButton(
@@ -715,14 +689,7 @@ class _ModelReState extends ResumableState<ModelRequests>{
       },
     );
   }
-  @override
-  void dispose() {
-    FirebaseAuth.instance.signOut();
-    SharedPreferences.getInstance().then((prefs){
-      prefs.remove("user_id");
-    });
-    super.dispose();
-  }
+
 
 }
 
