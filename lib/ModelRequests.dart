@@ -92,54 +92,6 @@ class _ModelReState extends ResumableState<ModelRequests>{
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      floatingActionButton: buildFloatingactionButtons(),
-      drawer: Drawer(
-        child: Column(
-          children: <Widget>[
-            Container(
-              color: Color(0xEBECF0),
-              alignment: Alignment.topCenter,
-              child: DrawerHeader(
-                child:  Image.asset("Assets/img/AC.png",width: 200,height: 200,),
-              ),
-            ),
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: <Widget>[
-                  isCustomer?Column(
-                    children: <Widget>[
-                      ListTile(
-                        title: Text("Sign Out"),
-                        leading: FaIcon(FontAwesomeIcons.signOutAlt),
-                        onTap: (){
-                          FirebaseAuth.instance.signOut();
-                          SharedPreferences.getInstance().then((prefs){
-                            prefs.remove("user_id");
-                          });
-                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>LoginScreen()), (route) => false);
-                        },
-                      ),
-                      Divider(),
-                    ],
-                  ):ListTile(
-                    title: Text("Sign Out"),
-                    leading: FaIcon(FontAwesomeIcons.signOutAlt),
-                    onTap: (){
-                      FirebaseAuth.instance.signOut();
-                      SharedPreferences.getInstance().then((prefs){
-                        prefs.remove("user_id");
-                      });
-                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>LoginScreen()), (route) => false);
-                    },
-                  ),
-                  Divider(),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
         appBar: AppBar(
           title: Text("Model Requests", style: TextStyle(
               color: Colors.white

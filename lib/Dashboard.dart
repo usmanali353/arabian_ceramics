@@ -2,6 +2,8 @@ import 'package:Arabian_Ceramics/Model/Product.dart';
 import 'package:Arabian_Ceramics/Model/Users.dart';
 import 'package:Arabian_Ceramics/ModelRequests.dart';
 import 'package:Arabian_Ceramics/Users/Login.dart';
+import 'package:Arabian_Ceramics/request_Model_form/Assumptions.dart';
+import 'package:Arabian_Ceramics/scanner.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
@@ -25,7 +27,7 @@ class _DashboardState extends State<Dashboard> {
   List<Product> products=[];
   List<String> productId=[],newRequestId=[],acmcApprovedId=[],sampleProductionScheduledId=[],sampleProducedId=[],approvedForTrialID=[],customerApprovedId=[],scheduledProductionId=[];
   Users user;
-
+  bool isCustomer=false;
   _DashboardState(this.user);
 
   List<Product> newRequests=[],acmcApproved=[],sampleProductionScheduled=[],sampleProduced=[],approvedForTrial=[],customerApproved=[],scheduledProduction=[];
@@ -43,6 +45,11 @@ class _DashboardState extends State<Dashboard> {
               productId.clear();
             }
             setState(() {
+              if(user.roles[0]['roleName'] =='Approve on behalf of Customer'){
+                setState(() {
+                  isCustomer=true;
+                });
+              }
               products.addAll(querySnapshot.documents.map((e) => Product.fromMap(e.data)).toList());
               for(int i=0;i<querySnapshot.documents.length;i++){
                 if(products.length>0&&products[i].status=='New Request'){
@@ -121,6 +128,22 @@ class _DashboardState extends State<Dashboard> {
                 children: <Widget>[
                   Column(
                     children: <Widget>[
+                      isCustomer?ListTile(
+                        title: Text("Add Model Request"),
+                        leading: FaIcon(FontAwesomeIcons.projectDiagram),
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Assumptions()));
+                        },
+                      ):Container(),
+                       Divider(),
+                      ListTile(
+                        title: Text("Scan Barcode"),
+                        leading: FaIcon(FontAwesomeIcons.barcode),
+                        onTap: (){
+                         Navigator.push(context, MaterialPageRoute(builder: (context)=>QRScanner()));
+                        },
+                      ),
+                      Divider(),
                       ListTile(
                         title: Text("Sign Out"),
                         leading: FaIcon(FontAwesomeIcons.signOutAlt),
@@ -135,8 +158,6 @@ class _DashboardState extends State<Dashboard> {
                       Divider(),
                     ],
                   ),
-
-                  Divider(),
                 ],
               ),
             )
