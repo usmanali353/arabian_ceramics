@@ -22,6 +22,7 @@ class _QRScanner_State extends State<QRScanner>{
   @override
   void initState() {
     super.initState();
+    scan();
   }
 
   @override
@@ -30,8 +31,8 @@ class _QRScanner_State extends State<QRScanner>{
    return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF004c4c),
-        title: Text("Create Production Request", style: TextStyle(
-            color: Colors.white
+        title: Text("Barcode Scanner", style: TextStyle(
+            color: Colors.white,
         ),),
       ),
       body: Center(
@@ -52,33 +53,30 @@ class _QRScanner_State extends State<QRScanner>{
     );
   }
   Future scan() async {
-    ProgressDialog pd=ProgressDialog(context);
 
     try {
       barcode = (await BarcodeScanner.scan());
       print('Barcode '+barcode.rawContent);
       setState(() {
         this.barcode = barcode;
-        pd.show();
-        Firestore.instance.collection("model_requests").document(barcode.rawContent).get().then((documentSnapshot){
-          if(documentSnapshot.exists){
-            pd.hide();
-            Product p=Product.fromMap(documentSnapshot.data);
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(p,documentSnapshot.documentID)));
-          }
-        }).catchError((onError){
-          pd.hide();
-          Flushbar(
-            message: "No Product Info Found",
-            backgroundColor: Colors.red,
-            duration: Duration(seconds: 5),
-          )..show(context);
-        });
+        if(barcode.rawContent!=null){
+          Firestore.instance.collection("model_requests").document(barcode.rawContent).get().then((documentSnapshot){
+            if(documentSnapshot.exists){
+              Product p=Product.fromMap(documentSnapshot.data);
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(p,documentSnapshot.documentID)));
+            }
+          }).catchError((onError){
+            Flushbar(
+              message: onError.toString(),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 5),
+            )..show(context);
+          });
+        }
+
       });
     } on PlatformException catch (e) {
-      pd.hide();
       if (e.code == BarcodeScanner.cameraAccessDenied) {
-
        Flushbar(
          message: "Camera Access not Granted",
          backgroundColor: Colors.red,
@@ -93,7 +91,6 @@ class _QRScanner_State extends State<QRScanner>{
        // setState(() => this.barcode = 'Unknown error: $e');
       }
     } on FormatException{
-      pd.hide();
       Flushbar(
         message: "User returned using the back-button before scanning anything",
         backgroundColor: Colors.red,
@@ -101,7 +98,6 @@ class _QRScanner_State extends State<QRScanner>{
       ).show(context);
       //setState(() => this.barcode = 'null (User returned using the "back"-button before scanning anything. Result)');
     } catch (e) {
-      pd.hide();
       Flushbar(
         message: e,
         backgroundColor: Colors.red,

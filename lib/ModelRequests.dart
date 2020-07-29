@@ -99,215 +99,301 @@ class _ModelReState extends ResumableState<ModelRequests>{
             )
           ],
         ),
-      body: Stack(
-        children: <Widget>[
-          Container(
-            color: Color(0xFF004c4c),
-            height: MediaQuery.of(context).size.height * 0.25,
-            width: MediaQuery.of(context).size.width,
-          ),
-          Center(
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                  itemCount:products.length, itemBuilder: (context,int index)
-              {
-                return InkWell(
-                  onTap: (){
-                    if(canApproveAcmc&&products[index].status=="New Request"){
-                      showAlertDialog(context,products[index],productId[index]);
-                    }else if(canScheduleProduction&&products[index].status=="Approved by ACMC"){
-                      showDatePicker(helpText:"Select Date for Sample Production",context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 60))).then((selectedDate){
-                        if(selectedDate!=null){
-                          Map<String,dynamic> map=Map();
-                          map.putIfAbsent("status", () => "Scheduled for Samples Production");
-                          map.putIfAbsent("closeing_date", () => DateFormat("yyyy-MM-dd").format(selectedDate));
-                          ProgressDialog pd=ProgressDialog(context);
-                          pd.show();
-                          Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((value) {
-                            pd.hide();
-                            Navigator.pop(context,'Refresh');
-                            Flushbar(
-                              message: "Request Scheduled",
-                              backgroundColor: Colors.green,
-                              duration: Duration(seconds: 5),
-                            )..show(context);
-                          }).catchError((onError){
-                            pd.hide();
-                            Flushbar(
-                              message: onError.toString(),
-                              backgroundColor: Colors.red,
-                              duration: Duration(seconds: 5),
-                            )..show(context);
-                          });
-                        }
+      body: ListView.builder(
+              itemCount:products.length, itemBuilder: (context,int index)
+          {
+            return InkWell(
+              onTap: (){
+                if(canApproveAcmc&&products[index].status=="New Request"){
+                  showAlertDialog(context,products[index],productId[index]);
+                }else if(canScheduleProduction&&products[index].status=="Approved by ACMC"){
+                  showDatePicker(helpText:"Select Date for Sample Production",context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 60))).then((selectedDate){
+                    if(selectedDate!=null){
+                      Map<String,dynamic> map=Map();
+                      map.putIfAbsent("status", () => "Scheduled for Samples Production");
+                      map.putIfAbsent("closeing_date", () => DateFormat("yyyy-MM-dd").format(selectedDate));
+                      ProgressDialog pd=ProgressDialog(context);
+                      pd.show();
+                      Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((value) {
+                        pd.hide();
+                        Navigator.pop(context,'Refresh');
+                        Flushbar(
+                          message: "Request Scheduled",
+                          backgroundColor: Colors.green,
+                          duration: Duration(seconds: 5),
+                        )..show(context);
+                      }).catchError((onError){
+                        pd.hide();
+                        Flushbar(
+                          message: onError.toString(),
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 5),
+                        )..show(context);
                       });
-                    }else if(canScheduleProduction&&products[index].status=="Scheduled for Samples Production"){
-                      showAlertChangeStatus(context, productId[index], products[index]);
-                    }else if(canApproveforTrial&&products[index].status=="Samples Produced"){
-                      // showCustomerApprovalDialog(context, products[index], productId[index]);
-                      showTrialApprovalDialog(context,products[index],productId[index]);
-                    }else if(canApproveforTrial&&(products[index].status=="Approved for Trial")){
-                      showDatePicker(helpText:"Select Date for Produced Sample Trial",context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 60))).then((selectedDate){
-                        if(selectedDate!=null){
-                          Map<String,dynamic> map=Map();
-                          map.putIfAbsent("trial_date", () => DateFormat("yyyy-MM-dd").format(selectedDate));
-                          map.putIfAbsent("status", () =>"Scheduled for Trial");
-                          ProgressDialog pd=ProgressDialog(context);
-                          pd.show();
-                          Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((updatedTrialDate){
-                            pd.hide();
-                            Navigator.pop(context,'Refresh');
-                            Flushbar(
-                              message: "Trial Scheduled",
-                              backgroundColor: Colors.green,
-                              duration: Duration(seconds: 5),
-                            )..show(context);
-                          }).catchError((onError){
-                            pd.hide();
-                            Flushbar(
-                              message: onError.toString(),
-                              backgroundColor: Colors.red,
-                              duration: Duration(seconds: 5),
-                            )..show(context);
-                          });
-                        }
-                      });
-                    }else if(isCustomer&&products[index].status=='Scheduled for Trial'){
-                      showCustomerApprovalDialog(context, products[index], productId[index]);
-                    }else if(canScheduleProduction&&products[index].status=='Approved by Customer'){
-                      showDatePicker(helpText:"Select Date for Production for Customer",context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 120))).then((selectedDate){
-                        if(selectedDate!=null){
-                          Map<String,dynamic> map=Map();
-                          map.putIfAbsent("production_date", () => DateFormat("yyyy-MM-dd").format(selectedDate));
-                          map.putIfAbsent("status", () =>"Scheduled for Production");
-                          ProgressDialog pd=ProgressDialog(context);
-                          pd.show();
-                          Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((updatedTrialDate){
-                            pd.hide();
-                            Navigator.pop(context,'Refresh');
-                            Flushbar(
-                              message: "Production for Customer Scheduled",
-                              backgroundColor: Colors.green,
-                              duration: Duration(seconds: 5),
-                            )..show(context);
-                          }).catchError((onError){
-                            pd.hide();
-                            Flushbar(
-                              message: onError.toString(),
-                              backgroundColor: Colors.red,
-                              duration: Duration(seconds: 5),
-                            )..show(context);
-                          });
-                        }
-                      });
-                    }else{
-                     Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(products[index],productId[index])));
                     }
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width * 1,
-                    child: Card(
-                      color: Colors.white,
-                        child: Stack(
+                  });
+                }else if(canScheduleProduction&&products[index].status=="Scheduled for Samples Production"){
+                  showAlertChangeStatus(context, productId[index], products[index]);
+                }else if(canApproveforTrial&&products[index].status=="Samples Produced"){
+                  // showCustomerApprovalDialog(context, products[index], productId[index]);
+                  showTrialApprovalDialog(context,products[index],productId[index]);
+                }else if(canApproveforTrial&&(products[index].status=="Approved for Trial")){
+                  showDatePicker(helpText:"Select Date for Produced Sample Trial",context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 60))).then((selectedDate){
+                    if(selectedDate!=null){
+                      Map<String,dynamic> map=Map();
+                      map.putIfAbsent("trial_date", () => DateFormat("yyyy-MM-dd").format(selectedDate));
+                      map.putIfAbsent("status", () =>"Scheduled for Trial");
+                      ProgressDialog pd=ProgressDialog(context);
+                      pd.show();
+                      Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((updatedTrialDate){
+                        pd.hide();
+                        Navigator.pop(context,'Refresh');
+                        Flushbar(
+                          message: "Trial Scheduled",
+                          backgroundColor: Colors.green,
+                          duration: Duration(seconds: 5),
+                        )..show(context);
+                      }).catchError((onError){
+                        pd.hide();
+                        Flushbar(
+                          message: onError.toString(),
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 5),
+                        )..show(context);
+                      });
+                    }
+                  });
+                }else if(isCustomer&&products[index].status=='Scheduled for Trial'){
+                  showCustomerApprovalDialog(context, products[index], productId[index]);
+                }else if(canScheduleProduction&&products[index].status=='Approved by Customer'){
+                  showDatePicker(helpText:"Select Date for Production for Customer",context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(Duration(days: 120))).then((selectedDate){
+                    if(selectedDate!=null){
+                      Map<String,dynamic> map=Map();
+                      map.putIfAbsent("production_date", () => DateFormat("yyyy-MM-dd").format(selectedDate));
+                      map.putIfAbsent("status", () =>"Scheduled for Production");
+                      ProgressDialog pd=ProgressDialog(context);
+                      pd.show();
+                      Firestore.instance.collection("model_requests").document(productId[index]).updateData(map).then((updatedTrialDate){
+                        pd.hide();
+                        Navigator.pop(context,'Refresh');
+                        Flushbar(
+                          message: "Production for Customer Scheduled",
+                          backgroundColor: Colors.green,
+                          duration: Duration(seconds: 5),
+                        )..show(context);
+                      }).catchError((onError){
+                        pd.hide();
+                        Flushbar(
+                          message: onError.toString(),
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 5),
+                        )..show(context);
+                      });
+                    }
+                  });
+                }else{
+                 Navigator.push(context, MaterialPageRoute(builder: (context)=>DetailPage(products[index],productId[index])));
+                }
+              },
+              child: Card(
+                elevation: 6,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    //color: Colors.teal,
+                  ),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * 0.21,
+
+                  child: Padding(
+                    padding: const EdgeInsets.all(13.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //crossAxisAlignment: CrossAxisAlignment.start,
+                      //mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Container(
                               //color: Color(0xFF004c4c),
-                              height: MediaQuery.of(context).size.height * 0.25,
-                              width: MediaQuery.of(context).size.width,
+                              height: 90,
+                              width: 90,
                               decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
                                   image: DecorationImage(
                                     image: NetworkImage(products[index].image),
                                     fit: BoxFit.cover,
                                   )
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 150),
-                              child: Center(
-                                child: Container(
-                                  height: MediaQuery.of(context).size.height,
-                                  //width: ,
-                                  child: Card(
-                                    color: Colors.white,
-                                    //margin: EdgeInsets.only(right: 15.0, left: 15.0),
-                                    child: Scrollbar(
-                                      child: ListView(
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: EdgeInsets.only(top: 4, bottom: 4),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(top: 4, bottom: 4),
-                                          ),
-                                          ListTile(
-                                            title: Text("Model Name", style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                            ),),
-                                            trailing: Text(products[index].modelName!=null?products[index].modelName:'---'),
-                                          ),
-                                          Divider(),
-                                          ListTile(
-                                            title: Text("Model Code", style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                            ),),
-                                            trailing: Text(products[index].modelCode!=null?products[index].modelCode:'---'),
-                                          ),
-                                          Divider(),
-                                          ListTile(
-                                            title: Text("Date", style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                            ),),
-                                            trailing: Text(products[index].requestDate),
-                                          ),
-                                          Divider(),
-                                          ListTile(
-                                            title: Text("Surface", style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                            ),),
-                                            trailing: Text(products[index].surface),
-                                          ),
-                                          Divider(),
-                                          ListTile(
-                                            title: Text("Size", style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                            ),),
-                                            trailing: Text(products[index].size),
-                                          ),
-                                          Divider(),
-                                          ListTile(
-                                            title: Text("Status", style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                            ),),
-                                            trailing: Text(products[index].status),
-                                          ),
-                                          Divider(),
-                                          ListTile(
-                                            title: Text("Commercial Decision", style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                            ),),
-                                            subtitle: Text(products[index].customerObservtion!=null?products[index].customerObservtion:'---', ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                            //Padding(padding: EdgeInsets.only(top:2),),
+                            Row(
+                              children: <Widget>[
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(2),
+                                    color: Colors.orange.shade100,
+                                    //color: Colors.teal,
                                   ),
+                                  height: 10,
+                                  width: 15,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 2, right: 2),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(2),
+                                    color: Colors.grey.shade300,
+                                    //color: Colors.teal,
+                                  ),
+                                  height: 10,
+                                  width: 15,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 2, right: 2),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(2),
+                                    color: Colors.brown.shade200,
+                                    //color: Colors.teal,
+                                  ),
+                                  height: 10,
+                                  width: 15,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 2, right: 2),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(2),
+                                    color: Colors.brown.shade500,
+                                    //color: Colors.teal,
+                                  ),
+                                  height: 10,
+                                  width: 15,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 2, right: 2),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(2),
+                                    color: Colors.orangeAccent.shade100,
+                                    //color: Colors.teal,
+                                  ),
+                                  height: 10,
+                                  width: 15,
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                        VerticalDivider(color: Colors.grey,),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.62,
+                          height: MediaQuery.of(context).size.height * 0.62,
+                          color: Colors.white,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(left: 6, top: 8),
+                                child: Text(products[index].modelName!=null?products[index].modelName:'', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Row(
+                                    //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      Icon(
+                                        Icons.layers,
+                                        color: Colors.teal,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 2, right: 2),
+                                      ),
+                                      Text(products[index].surface!=null?products[index].surface:'')
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 50),
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Icon(
+                                        Icons.zoom_out_map,
+                                        color: Colors.teal,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 2, right: 2),
+                                      ),
+                                      Text("60x60, 30x30")
+                                    ],
+
+
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Icon(
+                                        Icons.date_range,
+                                        color: Colors.teal,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 2, right: 2),
+                                      ),
+                                      Text(products[index].requestDate!=null?products[index].requestDate:'')
+                                    ],
+
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 27),
+                                  ),
+
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 1),
+                                child: Row(
+                                  //crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.done_all,
+                                      //size: 14,
+                                      color: Colors.teal,
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 3, right: 3),
+                                    ),
+                                    Text(products[index].status!=null?products[index].status:'')
+                                  ],
+
+
                                 ),
                               ),
-                            ),
-                          ],
-                        )
-
-
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                );
-              }),
-            )
 
-        ],
-      ),
+                ),
+              ),
+            );
+          }),
 
     );
 
