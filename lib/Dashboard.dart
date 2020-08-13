@@ -767,7 +767,7 @@ class _DashboardState extends ResumableState<Dashboard> {
                           child: Center(
                             child: Container(
                               //margin: EdgeInsets.only(left: 10,top: 5),
-                              child: Text(sampleProduced!=null?sampleProduced.length.toString():'', style: TextStyle(color:Color(0xFF004c4c),
+                              child: Text(customerApproved!=null?customerApproved.length.toString():'', style: TextStyle(color:Color(0xFF004c4c),
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold
                               ),
